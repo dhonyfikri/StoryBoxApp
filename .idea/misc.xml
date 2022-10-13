@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/drawable/bg_button.xml" value="0.2115" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/drawable/bg_button_disable.xml" value="0.2115" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/drawable/bg_camera_feature.xml" value="0.172" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/drawable/bg_camera_schoot.xml" value="0.18" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/drawable/bg_name_detail_label.xml" value="0.172" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/drawable/circle.xml" value="0.18" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/drawable/fg_button.xml" value="0.2115" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/drawable/fg_circle_button.xml" value="0.172" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/drawable/form_field_cust.xml" value="0.2115" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/drawable/ic_baseline_create_24.xml" value="0.172" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/drawable/ic_camera.xml" value="0.172" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/drawable/ic_create.xml" value="0.172" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/drawable/ic_dot_three.xml" value="0.172" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/drawable/ic_menu_camera.xml" value="0.171" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/drawable/ic_menu_gallery.xml" value="0.171" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/drawable/ic_menu_slideshow.xml" value="0.171" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/drawable/ic_pencil.xml" value="0.172" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/drawable/ic_profile.xml" value="0.172" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/drawable/ic_visibility_off.xml" value="0.172" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/drawable/ic_visibility_on.xml" value="0.2115" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/drawable/progress_spin_bg.xml" value="0.172" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/drawable/side_nav_bar.xml" value="0.171" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/font-v26/font.xml" value="0.19230769230769232" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/font/font.xml" value="0.19145299145299147" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/font/poppins_thin_italic.xml" value="0.19230769230769232" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/layout/activity_camera_shoot.xml" value="0.2" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/layout/activity_create_story.xml" value="0.25" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/layout/activity_home.xml" value="0.25" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/layout/activity_list.xml" value="0.1675213675213675" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/layout/activity_login.xml" value="0.25" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/layout/activity_main.xml" value="0.15256410256410258" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/layout/activity_register.xml" value="0.33" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/layout/activity_story_detail.xml" value="0.25" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/layout/app_bar_home.xml" value="0.1675213675213675" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/layout/app_bar_home2.xml" value="0.1675213675213675" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/layout/camera_capture.xml" value="0.22" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/layout/common_loading.xml" value="0.21" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/layout/content_home.xml" value="0.1675213675213675" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/layout/content_home2.xml" value="0.1675213675213675" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/layout/failed_request_modal.xml" value="0.25" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/layout/fragment_gallery.xml" value="0.1675213675213675" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/layout/fragment_home.xml" value="0.1675213675213675" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/layout/lv_item.xml" value="0.1675213675213675" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/layout/nav_header_home.xml" value="0.1675213675213675" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/layout/refresh_question_modal.xml" value="0.25" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/layout/response_modal.xml" value="0.1675213675213675" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/layout/story_item.xml" value="0.22" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/layout/story_list_widget.xml" value="0.1675213675213675" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/layout/widget_story_item.xml" value="0.1675213675213675" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/menu/activity_home_drawer.xml" value="0.25" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/menu/home.xml" value="0.1675213675213675" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/menu/home_toolbar_menu.xml" value="0.1675213675213675" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/mipmap-anydpi-v26/ic_app.xml" value="0.1655" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.205" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.1655" />
+        <entry key="..\:/Magang/digitalent/project/Android-Intermediate/SubmissionStoryAppBPAI/app/src/main/res/xml/file_paths.xml" value="0.1675213675213675" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.1" />
+      </ProjectState>
+    </option>
+  </component>
+</project>
