@@ -2,7 +2,6 @@ package com.fikri.submissionstoryappbpai.activity
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
@@ -14,9 +13,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,14 +24,13 @@ import com.fikri.submissionstoryappbpai.databinding.ActivityHomeBinding
 import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
 import com.fikri.submissionstoryappbpai.other_class.RefreshModal
 import com.fikri.submissionstoryappbpai.other_class.ResponseModal
+import com.fikri.submissionstoryappbpai.other_class.dataStore
 import com.fikri.submissionstoryappbpai.view_model.HomeViewModel
-import com.fikri.submissionstoryappbpai.view_model_factory.HomeFactory
+import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithDataStorePrefFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "session")
 
 class HomeActivity : AppCompatActivity() {
 
@@ -62,7 +57,10 @@ class HomeActivity : AppCompatActivity() {
     private fun setupData() {
         val pref = DataStorePreferences.getInstance(dataStore)
         viewModel =
-            ViewModelProvider(this, HomeFactory(pref))[HomeViewModel::class.java]
+            ViewModelProvider(
+                this,
+                ViewModelWithDataStorePrefFactory(pref)
+            )[HomeViewModel::class.java]
 
         binding.apply {
             btnViewMore.alpha = viewModel.btnViewMoreAlpha

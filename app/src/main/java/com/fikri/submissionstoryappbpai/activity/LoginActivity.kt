@@ -2,27 +2,21 @@ package com.fikri.submissionstoryappbpai.activity
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import com.fikri.submissionstoryappbpai.R
 import com.fikri.submissionstoryappbpai.databinding.ActivityLoginBinding
 import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
 import com.fikri.submissionstoryappbpai.other_class.LoadingModal
 import com.fikri.submissionstoryappbpai.other_class.ResponseModal
+import com.fikri.submissionstoryappbpai.other_class.dataStore
 import com.fikri.submissionstoryappbpai.view_model.LoginViewModel
-import com.fikri.submissionstoryappbpai.view_model_factory.LoginFactory
-
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "session")
+import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithDataStorePrefFactory
 
 class LoginActivity : AppCompatActivity() {
 
@@ -51,7 +45,10 @@ class LoginActivity : AppCompatActivity() {
     private fun setupData() {
         val pref = DataStorePreferences.getInstance(dataStore)
         viewModel =
-            ViewModelProvider(this, LoginFactory(pref))[LoginViewModel::class.java]
+            ViewModelProvider(
+                this,
+                ViewModelWithDataStorePrefFactory(pref)
+            )[LoginViewModel::class.java]
     }
 
     private fun setupAction() {
@@ -61,21 +58,11 @@ class LoginActivity : AppCompatActivity() {
         }
 
         binding.apply {
-            etLoginEmail.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    setLoginEnableOrDisable()
-                }
-
-                override fun afterTextChanged(p0: Editable?) {}
+            etLoginEmail.addTextChangedListener(onTextChanged = { _, _, _, _ ->
+                setLoginEnableOrDisable()
             })
-            etLoginPassword.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    setLoginEnableOrDisable()
-                }
-
-                override fun afterTextChanged(p0: Editable?) {}
+            etLoginPassword.addTextChangedListener(onTextChanged = { _, _, _, _ ->
+                setLoginEnableOrDisable()
             })
 
             btnLogin.setOnClickListener {
@@ -89,6 +76,10 @@ class LoginActivity : AppCompatActivity() {
                 launcherIntentRegister.launch(
                     Intent(this@LoginActivity, RegisterActivity::class.java)
                 )
+            }
+
+            btnAppearance.setOnClickListener {
+                startActivity(Intent(this@LoginActivity, DisplayConfigurationActivity::class.java))
             }
         }
 
@@ -108,11 +99,7 @@ class LoginActivity : AppCompatActivity() {
                 if (isShowingResponseModal) {
                     if (responseType == ResponseModal.TYPE_SUCCESS) {
                         dismissResponseModal()
-                        saveLoginData(
-                            loginResponse?.loginResult?.userId,
-                            loginResponse?.loginResult?.name,
-                            loginResponse?.loginResult?.token
-                        )
+                        saveLoginData()
                     } else {
                         responseModal.showResponseModal(
                             this@LoginActivity,
@@ -134,7 +121,7 @@ class LoginActivity : AppCompatActivity() {
             }
             isTimeToHome.observe(this@LoginActivity) {
                 if (it) {
-                    startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
+                    startActivity(Intent(this@LoginActivity, HomeBottomNavigationActivity::class.java))
                     finish()
                 }
             }
@@ -166,6 +153,7 @@ class LoginActivity : AppCompatActivity() {
             btnLogin.alpha = 0f
             tvAskRegister.translationY = 1000f
             btnRegister.translationY = 1000f
+            btnAppearance.translationY = 1000f
         }
 
         val loginText = ObjectAnimator.ofFloat(binding.tvLogin, View.ALPHA, 1f).setDuration(500)
@@ -186,6 +174,8 @@ class LoginActivity : AppCompatActivity() {
                 ObjectAnimator.ofFloat(binding.tvAskRegister, View.TRANSLATION_Y, 0F)
                     .setDuration(1000),
                 ObjectAnimator.ofFloat(binding.btnRegister, View.TRANSLATION_Y, 0F)
+                    .setDuration(1000),
+                ObjectAnimator.ofFloat(binding.btnAppearance, View.TRANSLATION_Y, 0F)
                     .setDuration(1000),
             )
         }

@@ -12,6 +12,8 @@
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="18" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <queries>
         <intent>
@@ -43,9 +45,15 @@
         android:theme="@style/Theme.SubmissionStoryAppBPAI"
         tools:targetApi="31">
         <activity
-            android:name=".activity.ListActivity"
+            android:name=".activity.DisplayConfigurationActivity"
             android:exported="false" />
-
+        <activity
+            android:name=".activity.HomeBottomNavigationActivity"
+            android:exported="false"
+            android:label="@string/title_activity_home_bottom_navigation" />
+        <activity
+            android:name=".activity.CobaActivity"
+            android:exported="false" />
         <activity
             android:name=".activity.CameraShotActivity"
             android:exported="false" />
@@ -66,6 +74,7 @@
             android:exported="false" />
         <activity
             android:name=".activity.MainActivity"
+            android:noHistory="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -73,6 +82,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyC6bfi3qBpm2Qw0c2_k0bjKvHRCFoWh2ic" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

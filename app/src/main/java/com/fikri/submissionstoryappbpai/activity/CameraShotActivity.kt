@@ -18,7 +18,7 @@ import com.fikri.submissionstoryappbpai.R
 import com.fikri.submissionstoryappbpai.databinding.ActivityCameraShootBinding
 import com.fikri.submissionstoryappbpai.other_class.createFile
 import com.fikri.submissionstoryappbpai.view_model.CameraShotViewModel
-import com.fikri.submissionstoryappbpai.view_model_factory.CameraShotFactory
+import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelFactory
 
 
 class CameraShotActivity : AppCompatActivity() {
@@ -38,7 +38,7 @@ class CameraShotActivity : AppCompatActivity() {
 
     private fun setupData() {
         viewModel =
-            ViewModelProvider(this, CameraShotFactory())[CameraShotViewModel::class.java]
+            ViewModelProvider(this, ViewModelFactory())[CameraShotViewModel::class.java]
     }
 
     private fun setupAction() {

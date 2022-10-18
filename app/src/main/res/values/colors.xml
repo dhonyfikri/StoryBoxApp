@@ -6,11 +6,14 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
+    <color name="gray_900">#FF222222</color>
     <color name="white">#FFFFFFFF</color>
 
     <color name="primary">#595686</color>
     <color name="secondary">#869FFE</color>
     <color name="tertiary">#DDDDF6</color>
+    <color name="alert">#FF5722</color>
+    <color name="success">#3FC144</color>
     <color name="text_primary">#333333</color>
     <color name="text_secondary">#676767</color>
     <color name="disable">#888888</color>

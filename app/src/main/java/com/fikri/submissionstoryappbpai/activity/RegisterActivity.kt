@@ -4,17 +4,16 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import com.fikri.submissionstoryappbpai.R
 import com.fikri.submissionstoryappbpai.databinding.ActivityRegisterBinding
 import com.fikri.submissionstoryappbpai.other_class.LoadingModal
 import com.fikri.submissionstoryappbpai.other_class.ResponseModal
 import com.fikri.submissionstoryappbpai.view_model.RegisterViewModel
-import com.fikri.submissionstoryappbpai.view_model_factory.RegisterFactory
+import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelFactory
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
@@ -35,7 +34,7 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun setupData() {
         viewModel =
-            ViewModelProvider(this, RegisterFactory())[RegisterViewModel::class.java]
+            ViewModelProvider(this, ViewModelFactory())[RegisterViewModel::class.java]
     }
 
     private fun setupAction() {
@@ -45,32 +44,17 @@ class RegisterActivity : AppCompatActivity() {
         }
 
         binding.apply {
-            etRegisterName.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    if (p0.toString().trim().isEmpty()) etRegisterName.error = resources.getString(
-                        R.string.name_error
-                    )
-                    setLoginEnableOrDisable()
-                }
-
-                override fun afterTextChanged(p0: Editable?) {}
+            etRegisterName.addTextChangedListener(onTextChanged = { p0, _, _, _ ->
+                if (p0.toString().trim().isEmpty()) etRegisterName.error = resources.getString(
+                    R.string.name_error
+                )
+                setLoginEnableOrDisable()
             })
-            etRegisterEmail.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    setLoginEnableOrDisable()
-                }
-
-                override fun afterTextChanged(p0: Editable?) {}
+            etRegisterEmail.addTextChangedListener(onTextChanged = { _, _, _, _ ->
+                setLoginEnableOrDisable()
             })
-            etRegisterPassword.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    setLoginEnableOrDisable()
-                }
-
-                override fun afterTextChanged(p0: Editable?) {}
+            etRegisterPassword.addTextChangedListener(onTextChanged = { _, _, _, _ ->
+                setLoginEnableOrDisable()
             })
 
             btnRegister.setOnClickListener {
@@ -83,6 +67,10 @@ class RegisterActivity : AppCompatActivity() {
 
             btnLogin.setOnClickListener {
                 finish()
+            }
+
+            btnAppearance.setOnClickListener {
+                startActivity(Intent(this@RegisterActivity, DisplayConfigurationActivity::class.java))
             }
         }
 
@@ -157,9 +145,10 @@ class RegisterActivity : AppCompatActivity() {
             etRegisterEmail.alpha = 0f
             tvPasswordLabel.alpha = 0f
             etRegisterPassword.alpha = 0f
-            btnLogin.translationY = 1000f
-            tvAskLogin.translationY = 1000f
             btnRegister.alpha = 0f
+            tvAskLogin.translationY = 1000f
+            btnLogin.translationY = 1000f
+            btnAppearance.translationY = 1000f
         }
         val registerText =
             ObjectAnimator.ofFloat(binding.tvRegister, View.ALPHA, 1f).setDuration(500)
@@ -183,6 +172,7 @@ class RegisterActivity : AppCompatActivity() {
                 ObjectAnimator.ofFloat(binding.tvAskLogin, View.TRANSLATION_Y, 0F)
                     .setDuration(1000),
                 ObjectAnimator.ofFloat(binding.btnLogin, View.TRANSLATION_Y, 0F).setDuration(1000),
+                ObjectAnimator.ofFloat(binding.btnAppearance, View.TRANSLATION_Y, 0F).setDuration(1000),
             )
         }
 

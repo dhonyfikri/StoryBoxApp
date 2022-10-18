@@ -69,13 +69,14 @@ class RefreshModal {
         const val TYPE_GENERAL = "general"
         const val TYPE_ERROR = "error"
         const val TYPE_FAILED = "failed"
+        const val TYPE_MISTAKE = "mistake"
     }
 
     private var modal: Dialog? = null
 
     fun showRefreshModal(
         context: Context,
-        type: String = TYPE_GENERAL,
+        type: String? = TYPE_GENERAL,
         message: String?,
         onRefreshClicked: (() -> Unit)? = null,
         onCloseClicked: (() -> Unit)? = null
@@ -89,23 +90,19 @@ class RefreshModal {
 
         ivIllustration?.setImageDrawable(
             when (type) {
-                ResponseModal.TYPE_GENERAL -> ContextCompat.getDrawable(
+                TYPE_GENERAL -> ContextCompat.getDrawable(
                     context,
                     R.drawable.il_emotion_general
                 )
-                ResponseModal.TYPE_ERROR -> ContextCompat.getDrawable(
+                TYPE_ERROR -> ContextCompat.getDrawable(
                     context,
                     R.drawable.il_emotion_confused
                 )
-                ResponseModal.TYPE_FAILED -> ContextCompat.getDrawable(
+                TYPE_FAILED -> ContextCompat.getDrawable(
                     context,
                     R.drawable.il_emotion_sad
                 )
-                ResponseModal.TYPE_SUCCESS -> ContextCompat.getDrawable(
-                    context,
-                    R.drawable.il_emotion_happy
-                )
-                ResponseModal.TYPE_MISTAKE -> ContextCompat.getDrawable(
+                TYPE_MISTAKE -> ContextCompat.getDrawable(
                     context,
                     R.drawable.il_emotion_angry
                 )

@@ -54,10 +54,17 @@ class ListStoryAdapter(private val context: Context, private val listStory: Arra
         val params = holder.binding.cvStoryItem.layoutParams as RecyclerView.LayoutParams
         params.setMargins(
             params.leftMargin,
-            params.topMargin,
+            if (position == 0) {
+                context.resources.getDimension(R.dimen.header_height).toInt() + dpToPx(context, 4f).toInt()
+            } else {
+                dpToPx(context, 4f).toInt()
+            },
             params.rightMargin,
             if (position == listStory.size - 1) {
-                dpToPx(context, 104f).toInt()
+                context.resources.getDimension(R.dimen.bottom_nav_height).toInt() + dpToPx(
+                    context,
+                    62f
+                ).toInt()
             } else {
                 dpToPx(context, 4f).toInt()
             }

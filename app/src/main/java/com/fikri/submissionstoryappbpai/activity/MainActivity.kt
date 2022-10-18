@@ -1,21 +1,17 @@
 package com.fikri.submissionstoryappbpai.activity
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
 import com.fikri.submissionstoryappbpai.databinding.ActivityMainBinding
 import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
+import com.fikri.submissionstoryappbpai.other_class.dataStore
 import com.fikri.submissionstoryappbpai.view_model.MainActivityViewModel
-import com.fikri.submissionstoryappbpai.view_model_factory.MainActivityFactory
-
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "session")
+import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithDataStorePrefFactory
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,11 +31,22 @@ class MainActivity : AppCompatActivity() {
     private fun setupData() {
         val pref = DataStorePreferences.getInstance(dataStore)
         viewModel =
-            ViewModelProvider(this, MainActivityFactory(pref))[MainActivityViewModel::class.java]
+            ViewModelProvider(
+                this,
+                ViewModelWithDataStorePrefFactory(pref)
+            )[MainActivityViewModel::class.java]
     }
 
     private fun setupAction() {
         viewModel.apply {
+            viewModel.getThemeSettings().observe(this@MainActivity) { isDarkModeActive: Boolean ->
+                if (isDarkModeActive) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                }
+            }
+
             isTimeOut.observe(this@MainActivity) { isTimeOut ->
                 if (isTimeOut) {
                     viewModel.validatingLoginSession()
@@ -50,7 +57,6 @@ class MainActivity : AppCompatActivity() {
                 if (isValidated) {
                     saveCurrentSession()
                 } else {
-                    waitBeforeSelfDestroy()
                     startActivity(
                         Intent(this@MainActivity, LoginActivity::class.java),
                         ActivityOptionsCompat.makeSceneTransitionAnimation(
@@ -66,15 +72,10 @@ class MainActivity : AppCompatActivity() {
 
             isTimeToHome.observe(this@MainActivity) {
                 if (it) {
-                    waitBeforeSelfDestroy()
                     startActivity(
-                        Intent(this@MainActivity, HomeActivity::class.java)
+                        Intent(this@MainActivity, HomeBottomNavigationActivity::class.java)
                     )
                 }
-            }
-
-            timeToSelfDestroy.observe(this@MainActivity) {
-                if (it) finish()
             }
         }
     }

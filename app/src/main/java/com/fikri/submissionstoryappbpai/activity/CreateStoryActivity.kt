@@ -3,7 +3,6 @@ package com.fikri.submissionstoryappbpai.activity
 import android.Manifest
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
-import android.content.Context
 import android.content.Intent
 import android.content.Intent.ACTION_GET_CONTENT
 import android.content.pm.PackageManager
@@ -11,27 +10,21 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import com.fikri.submissionstoryappbpai.R
 import com.fikri.submissionstoryappbpai.databinding.ActivityCreateStoryBinding
 import com.fikri.submissionstoryappbpai.other_class.*
 import com.fikri.submissionstoryappbpai.view_model.CreateStoryViewModel
-import com.fikri.submissionstoryappbpai.view_model_factory.CreateStoryFactory
+import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithDataStorePrefFactory
 import java.io.File
 import java.io.FileOutputStream
-
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "session")
 
 class CreateStoryActivity : AppCompatActivity() {
 
@@ -61,7 +54,10 @@ class CreateStoryActivity : AppCompatActivity() {
     private fun setupData() {
         val pref = DataStorePreferences.getInstance(dataStore)
         viewModel =
-            ViewModelProvider(this, CreateStoryFactory(pref))[CreateStoryViewModel::class.java]
+            ViewModelProvider(
+                this,
+                ViewModelWithDataStorePrefFactory(pref)
+            )[CreateStoryViewModel::class.java]
 
         if (!allPermissionsGranted()) {
             ActivityCompat.requestPermissions(
@@ -91,13 +87,8 @@ class CreateStoryActivity : AppCompatActivity() {
                 viewModel.uploadStory(edAddDescription.text.toString())
             }
 
-            edAddDescription.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                    validityCheck()
-                }
-
-                override fun afterTextChanged(p0: Editable?) {}
+            edAddDescription.addTextChangedListener(onTextChanged = { _, _, _, _ ->
+                validityCheck()
             })
         }
 
@@ -128,12 +119,12 @@ class CreateStoryActivity : AppCompatActivity() {
                     refreshModal.showRefreshModal(
                         this@CreateStoryActivity,
                         responseType,
-                        if (responseType != ResponseModal.TYPE_ERROR) {
-                            responseMessage
-                        } else {
+                        if (responseType == RefreshModal.TYPE_ERROR) {
                             resources.getString(
                                 R.string.connection_problem
                             )
+                        } else {
+                            responseMessage
                         },
                         onRefreshClicked = {
                             viewModel.dismissRefreshModal()

@@ -9,6 +9,13 @@ import android.graphics.Matrix
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.util.TypedValue
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import com.fikri.submissionstoryappbpai.R
 import java.io.*
 import java.text.DateFormat
@@ -16,6 +23,22 @@ import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
+
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "session")
+
+@ColorInt
+fun Context.resolveColorAttr(@AttrRes colorAttr: Int): Int {
+    val resolvedAttr =
+        resolveThemeAttr(colorAttr)
+    val colorRes = if (resolvedAttr.resourceId != 0) resolvedAttr.resourceId else resolvedAttr.data
+    return ContextCompat.getColor(this, colorRes)
+}
+
+fun Context.resolveThemeAttr(@AttrRes attrRes: Int): TypedValue {
+    val typedValue = TypedValue()
+    theme.resolveAttribute(attrRes, typedValue, true)
+    return typedValue
+}
 
 fun String.withDateFormat(type: Int = DateFormat.DEFAULT): String {
     var result = this

@@ -13,7 +13,7 @@ import com.fikri.submissionstoryappbpai.data_model.Story
 import com.fikri.submissionstoryappbpai.databinding.ActivityStoryDetailBinding
 import com.fikri.submissionstoryappbpai.other_class.withDateFormat
 import com.fikri.submissionstoryappbpai.view_model.StoryDetailViewModel
-import com.fikri.submissionstoryappbpai.view_model_factory.StoryDetailFactory
+import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelFactory
 import java.text.DateFormat
 
 
@@ -40,7 +40,7 @@ class StoryDetailActivity : AppCompatActivity() {
 
     private fun setupData() {
         viewModel =
-            ViewModelProvider(this, StoryDetailFactory())[StoryDetailViewModel::class.java]
+            ViewModelProvider(this, ViewModelFactory())[StoryDetailViewModel::class.java]
 
         binding.svMainScrollView.scrollY = viewModel.currentScreenScrollOffsetY
 

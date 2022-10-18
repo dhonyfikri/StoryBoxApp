@@ -2,6 +2,7 @@ package com.fikri.submissionstoryappbpai.other_class
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
@@ -10,9 +11,11 @@ import kotlinx.coroutines.flow.map
 class DataStorePreferences private constructor(private val dataStore: DataStore<Preferences>) {
     companion object {
         val SESSION_KEY = stringPreferencesKey("login_session")
+        val LAST_LOGIN_KEY = stringPreferencesKey("last_login_session")
         val TOKEN_KEY = stringPreferencesKey("token")
         val USER_ID_KEY = stringPreferencesKey("user_id")
         val NAME_KEY = stringPreferencesKey("name")
+        val DARK_MODE_KEY = booleanPreferencesKey("dark_mode")
 
         @Volatile
         private var INSTANCE: DataStorePreferences? = null
@@ -26,11 +29,11 @@ class DataStorePreferences private constructor(private val dataStore: DataStore<
         }
     }
 
-    @JvmName("getDataStoreValue1")
+    @JvmName("getDataStoreValueString")
     fun getDataStoreValue(keyParamsString: Preferences.Key<String>): Flow<String> {
         return dataStore.data.map { preferences ->
             preferences[keyParamsString]
-                ?: if (keyParamsString == SESSION_KEY) {
+                ?: if (keyParamsString == SESSION_KEY || keyParamsString == LAST_LOGIN_KEY) {
                     "0001-01-01 00:00:00.00"
                 } else {
                     ""
@@ -38,9 +41,22 @@ class DataStorePreferences private constructor(private val dataStore: DataStore<
         }
     }
 
-    suspend fun saveDataStoreValue(keyParamsString: Preferences.Key<String>, value: String) {
+    @JvmName("getDataStoreValueBoolean")
+    fun getDataStoreValue(keyParamsBoolean: Preferences.Key<Boolean>): Flow<Boolean> {
+        return dataStore.data.map { preferences ->
+            preferences[keyParamsBoolean] ?: false
+        }
+    }
+
+    suspend fun saveDataStoreValue(keyParamsString: Preferences.Key<String>, value: String?) {
         dataStore.edit { preferences ->
-            preferences[keyParamsString] = value
+            preferences[keyParamsString] = value ?: ""
+        }
+    }
+
+    suspend fun saveDataStoreValue(keyParamsBoolean: Preferences.Key<Boolean>, value: Boolean?) {
+        dataStore.edit { preferences ->
+            preferences[keyParamsBoolean] = value ?: false
         }
     }
 
@@ -50,6 +66,7 @@ class DataStorePreferences private constructor(private val dataStore: DataStore<
             preferences.remove(TOKEN_KEY)
             preferences.remove(USER_ID_KEY)
             preferences.remove(NAME_KEY)
+            preferences.remove(LAST_LOGIN_KEY)
         }
     }
 }

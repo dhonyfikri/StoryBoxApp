@@ -2,13 +2,12 @@ package com.fikri.submissionstoryappbpai.custom_component
 
 import android.content.Context
 import android.graphics.Canvas
-import android.text.Editable
 import android.text.TextUtils
-import android.text.TextWatcher
 import android.util.AttributeSet
 import android.util.Patterns
 import android.view.View
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.widget.addTextChangedListener
 import com.fikri.submissionstoryappbpai.R
 
 class EmailFormField : AppCompatEditText {
@@ -33,24 +32,14 @@ class EmailFormField : AppCompatEditText {
 
     private fun init() {
         isSingleLine = true
-        addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                isValid = if (TextUtils.isEmpty(p0) || !Patterns.EMAIL_ADDRESS.matcher(p0 ?: "")
-                        .matches()
-                ) {
-                    error = resources.getString(R.string.input_email_error)
-                    false
-                } else {
-                    true
-                }
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-
+        addTextChangedListener(onTextChanged = { p0, _, _, _ ->
+            isValid = if (TextUtils.isEmpty(p0) || !Patterns.EMAIL_ADDRESS.matcher(p0 ?: "")
+                    .matches()
+            ) {
+                error = resources.getString(R.string.input_email_error)
+                false
+            } else {
+                true
             }
         })
     }

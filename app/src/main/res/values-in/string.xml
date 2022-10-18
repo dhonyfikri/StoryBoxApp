@@ -69,4 +69,25 @@
     <string name="close_refresh_dialog">Tutup dialog penyegaran</string>
     <string name="close_response_dialog">Tutup dialog respon</string>
     <string name="written_by">Ditulis oleh %1$s</string>
+    <string name="preference_settings">Preferensi</string>
+    <string name="language">Bahasa</string>
+    <string name="dark_mode">Mode Gelap</string>
+    <string name="camera">Kamera</string>
+    <string name="camera_and_gps">Kamera dan GPS</string>
+    <string name="make_a_simple_story">Buat Cerita Sederhana</string>
+    <string name="create_stories_with_your_geolocation">Buat Cerita Dengan Geolokasi Anda</string>
+    <string name="display_configuration">Konfigurasi Tampilan</string>
+    <string name="display_orientation">Orientasi Tampilan</string>
+    <string name="display">Tampilan</string>
+    <string name="appearance">Penampilan</string>
+    <string name="appearance_settings">Pengaturan Penampilan</string>
+    <string name="or">Atau</string>
+    <string name="permissions_storage_etc">Izin, Penyimpanan, dll.</string>
+    <string name="more_menu">Menu Lainnya</string>
+    <string name="create_story">Buat Cerita</string>
+    <string name="story_maps">Cerita Peta</string>
+    <string name="story_list">Daftar Cerita</string>
+    <string name="geolocation_stories">Cerita Geolokasi</string>
+    <string name="more">Lainnya</string>
+    <string name="login_since">Login sejak %1$s</string>
 </resources>
