@@ -94,4 +94,7 @@
     <string name="geolocation_stories">Geolocation Stories</string>
     <string name="more">More</string>
     <string name="login_since">Logged in %1$s</string>
+    <string name="paging_error">"Oops… An error occurred. Try it soon!"</string>
+    <string name="empty_story_list">There are no stories</string>
+    <string name="you_are_in_offline_mode">You are in offline mode</string>
 </resources>

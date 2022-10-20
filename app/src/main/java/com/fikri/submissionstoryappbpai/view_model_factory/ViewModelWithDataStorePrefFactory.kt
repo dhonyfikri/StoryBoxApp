@@ -20,8 +20,6 @@ class ViewModelWithDataStorePrefFactory(private val pref: DataStorePreferences) 
             return HomeViewModel(pref) as T
         } else if (modelClass.isAssignableFrom(CreateStoryViewModel::class.java)) {
             return CreateStoryViewModel(pref) as T
-        } else if (modelClass.isAssignableFrom(StoryListViewModel::class.java)) {
-            return StoryListViewModel(pref) as T
         } else if (modelClass.isAssignableFrom(HomeBottomNavViewModel::class.java)) {
             return HomeBottomNavViewModel(pref) as T
         } else if (modelClass.isAssignableFrom(DisplayConfigurationViewModel::class.java)) {

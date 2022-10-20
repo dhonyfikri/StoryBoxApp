@@ -20,6 +20,7 @@ import com.fikri.submissionstoryappbpai.other_class.dataStore
 import com.fikri.submissionstoryappbpai.view_model.HomeBottomNavViewModel
 import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithDataStorePrefFactory
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 
 class HomeBottomNavigationActivity : AppCompatActivity(), MoreMenuFragment.SettingFragListener,
     CreateStoryOptionsFragment.CreateStoryOptionsListener {

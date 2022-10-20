@@ -90,4 +90,7 @@
     <string name="geolocation_stories">Cerita Geolokasi</string>
     <string name="more">Lainnya</string>
     <string name="login_since">Login sejak %1$s</string>
+    <string name="paging_error">Ups… Terjadi kesalahan. Coba sesaat lagi ya!</string>
+    <string name="empty_story_list">Tidak ada cerita apapun</string>
+    <string name="you_are_in_offline_mode">Kamu dalam mode offline</string>
 </resources>

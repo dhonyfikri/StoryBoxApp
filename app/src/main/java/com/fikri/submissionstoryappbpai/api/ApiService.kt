@@ -33,6 +33,14 @@ interface ApiService {
         @Query("location") locationEnable: Int
     ): Call<AllStoryResponseModel>
 
+    @GET("stories")
+    suspend fun getAllBasicStories(
+        @Header("Authorization") authorization: String,
+        @Query("page") page: Int,
+        @Query("size") size: Int,
+        @Query("location") locationEnable: Int
+    ): AllStoryResponseModel
+
     @Multipart
     @POST("stories")
     fun addStory(

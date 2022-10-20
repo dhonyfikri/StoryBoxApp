@@ -183,42 +183,42 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun initializeTheStoryListAdapterForTheFirstTime() {
-        val adapterStory = ListStoryAdapter(this, arrayListOf())
-        binding.rvStoryList.adapter = adapterStory
+//        val adapterStory = ListStoryAdapter(this, arrayListOf())
+//        binding.rvStoryList.adapter = adapterStory
     }
 
     private fun setStoryList(stories: ArrayList<Story>) {
-        val adapterStory = ListStoryAdapter(this, stories)
-        binding.rvStoryList.adapter = adapterStory
-
-        adapterStory.setOnItemClickCallback(object : ListStoryAdapter.OnItemClickCallback {
-            override fun onClickedItem(data: Story, imageThumbnailsView: View) {
-                val moveToStoryDetail = Intent(
-                    this@HomeActivity, StoryDetailActivity::class.java
-                )
-                moveToStoryDetail.putExtra(StoryDetailActivity.EXTRA_STORY, data)
-                startActivity(
-                    moveToStoryDetail, ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        this@HomeActivity, Pair(imageThumbnailsView, "image_detail")
-                    ).toBundle()
-                )
-            }
-        })
-
-        binding.apply {
-            if (stories.size > 0) {
-                rvStoryList.visibility = View.VISIBLE
-                tvStatementNoDataAvailable.visibility = View.GONE
-            } else {
-                rvStoryList.visibility = View.GONE
-                tvStatementNoDataAvailable.text = resources.getString(R.string.no_data_available)
-                tvStatementNoDataAvailable.visibility = View.VISIBLE
-            }
-
-            if (viewModel.isLoadMore) {
-                rvStoryList.scrollToPosition(viewModel.lastPositionBeforeLoadMore)
-            }
-        }
+//        val adapterStory = ListStoryAdapter(this, stories)
+//        binding.rvStoryList.adapter = adapterStory
+//
+//        adapterStory.setOnItemClickCallback(object : ListStoryAdapter.OnItemClickCallback {
+//            override fun onClickedItem(data: Story, imageThumbnailsView: View) {
+//                val moveToStoryDetail = Intent(
+//                    this@HomeActivity, StoryDetailActivity::class.java
+//                )
+//                moveToStoryDetail.putExtra(StoryDetailActivity.EXTRA_STORY, data)
+//                startActivity(
+//                    moveToStoryDetail, ActivityOptionsCompat.makeSceneTransitionAnimation(
+//                        this@HomeActivity, Pair(imageThumbnailsView, "image_detail")
+//                    ).toBundle()
+//                )
+//            }
+//        })
+//
+//        binding.apply {
+//            if (stories.size > 0) {
+//                rvStoryList.visibility = View.VISIBLE
+//                tvStatementNoDataAvailable.visibility = View.GONE
+//            } else {
+//                rvStoryList.visibility = View.GONE
+//                tvStatementNoDataAvailable.text = resources.getString(R.string.no_data_available)
+//                tvStatementNoDataAvailable.visibility = View.VISIBLE
+//            }
+//
+//            if (viewModel.isLoadMore) {
+//                rvStoryList.scrollToPosition(viewModel.lastPositionBeforeLoadMore)
+//            }
+//        }
     }
 
     private fun setShowingViewMoreButton(isShowing: Boolean = false) {

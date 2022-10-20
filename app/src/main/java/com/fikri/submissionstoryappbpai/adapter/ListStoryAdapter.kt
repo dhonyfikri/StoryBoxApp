@@ -4,6 +4,8 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.fikri.submissionstoryappbpai.R
@@ -12,12 +14,77 @@ import com.fikri.submissionstoryappbpai.databinding.StoryItemBinding
 import com.fikri.submissionstoryappbpai.other_class.dpToPx
 import com.fikri.submissionstoryappbpai.other_class.withDateFormat
 
-class ListStoryAdapter(private val context: Context, private val listStory: ArrayList<Story>) :
-    RecyclerView.Adapter<ListStoryAdapter.ListViewHolder>() {
+class ListStoryAdapter(private val context: Context) :
+    PagingDataAdapter<Story, ListStoryAdapter.ListViewHolder>(DIFF_CALLBACK) {
+
+    companion object {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Story>() {
+            override fun areItemsTheSame(
+                oldItem: Story,
+                newItem: Story
+            ): Boolean {
+                return oldItem == newItem
+            }
+
+            override fun areContentsTheSame(
+                oldItem: Story,
+                newItem: Story
+            ): Boolean {
+                return oldItem.id == newItem.id
+            }
+        }
+    }
 
     private lateinit var onItemClickCallback: OnItemClickCallback
 
-    class ListViewHolder(var binding: StoryItemBinding) : RecyclerView.ViewHolder(binding.root)
+    class ListViewHolder(private val binding: StoryItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(
+            ctx: Context,
+            data: Story,
+            pos: Int,
+            onClicked: ((value: Story, view: View) -> Unit)? = null
+        ) {
+            binding.apply {
+                tvItemName.text = ctx.getString(R.string.by, data.name)
+                tvItemName.contentDescription =
+                    ctx.getString(R.string.written_by, data.name)
+                tvDescription.text = data.description
+                tvDate.text = ctx.getString(
+                    R.string.upload_date,
+                    data.createdAt.withDateFormat()
+                )
+                tvDate.contentDescription = ctx.getString(
+                    R.string.uploaded_on,
+                    data.createdAt.withDateFormat()
+                )
+                Glide.with(ctx)
+                    .load(data.photoUrl)
+                    .error(R.drawable.default_image)
+                    .into(binding.ivItemPhoto)
+
+                cvStoryItem.setOnClickListener {
+                    onClicked?.invoke(data, ivItemPhoto)
+                }
+
+                val params = cvStoryItem.layoutParams as RecyclerView.LayoutParams
+                params.setMargins(
+                    params.leftMargin,
+                    if (pos == 0) {
+                        ctx.resources.getDimension(R.dimen.header_height).toInt() + dpToPx(
+                            ctx,
+                            4f
+                        ).toInt()
+                    } else {
+                        dpToPx(ctx, 4f).toInt()
+                    },
+                    params.rightMargin,
+                    params.bottomMargin
+                )
+                cvStoryItem.layoutParams = params
+            }
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListViewHolder {
         val binding =
@@ -26,53 +93,16 @@ class ListStoryAdapter(private val context: Context, private val listStory: Arra
     }
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
-        holder.binding.apply {
-            tvItemName.text = context.resources.getString(R.string.by, listStory[position].name)
-            tvItemName.contentDescription =
-                context.resources.getString(R.string.written_by, listStory[position].name)
-            tvDescription.text = listStory[position].description
-            tvDate.text = context.resources.getString(
-                R.string.upload_date,
-                listStory[position].createdAt.withDateFormat()
-            )
-            tvDate.contentDescription = context.resources.getString(
-                R.string.uploaded_on,
-                listStory[position].createdAt.withDateFormat()
-            )
+        val data = getItem(position)
+        if (data != null) {
+            holder.bind(context, data, position, onClicked = { value, view ->
+                onItemClickCallback.onClickedItem(
+                    value,
+                    view
+                )
+            })
         }
-        Glide.with(holder.itemView.context)
-            .load(listStory[position].photoUrl)
-            .error(R.drawable.default_image)
-            .into(holder.binding.ivItemPhoto)
-
-        holder.itemView.setOnClickListener {
-            onItemClickCallback.onClickedItem(
-                listStory[holder.adapterPosition],
-                holder.binding.ivItemPhoto
-            )
-        }
-        val params = holder.binding.cvStoryItem.layoutParams as RecyclerView.LayoutParams
-        params.setMargins(
-            params.leftMargin,
-            if (position == 0) {
-                context.resources.getDimension(R.dimen.header_height).toInt() + dpToPx(context, 4f).toInt()
-            } else {
-                dpToPx(context, 4f).toInt()
-            },
-            params.rightMargin,
-            if (position == listStory.size - 1) {
-                context.resources.getDimension(R.dimen.bottom_nav_height).toInt() + dpToPx(
-                    context,
-                    62f
-                ).toInt()
-            } else {
-                dpToPx(context, 4f).toInt()
-            }
-        )
-        holder.binding.cvStoryItem.layoutParams = params
     }
-
-    override fun getItemCount(): Int = listStory.size
 
     fun setOnItemClickCallback(onItemClickCallback: OnItemClickCallback) {
         this.onItemClickCallback = onItemClickCallback
