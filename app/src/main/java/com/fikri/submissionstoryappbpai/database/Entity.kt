@@ -13,18 +13,6 @@ data class BasicStory(
     val createdAt: String,
 )
 
-@Entity(tableName = "geolocation_story")
-data class GeolocationStory(
-    @PrimaryKey
-    val id: String,
-    val name: String,
-    val description: String,
-    val photoUrl: String,
-    val createdAt: String,
-    val lat: Double,
-    val lon: Double,
-)
-
 @Entity(tableName = "basic_story_remote_keys")
 data class RemoteKeys(
     @PrimaryKey val id: String,

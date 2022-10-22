@@ -72,9 +72,9 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
-                            android:fontFamily="@font/poppins"
+                            android:fontFamily="@font/poppins_semibold"
                             android:text="@string/display_configuration"
-                            android:textColor="?android:textColorSecondary"
+                            android:textColor="?android:textColorHighlight"
                             android:textSize="16sp" />
 
                         <View
@@ -100,7 +100,7 @@
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
                                 android:src="@drawable/ic_language"
-                                app:tint="@color/secondary" />
+                                app:tint="?android:textColorHighlight" />
 
                             <TextView
                                 android:layout_width="0dp"
@@ -124,6 +124,7 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="12dp"
                             android:gravity="center"
                             android:orientation="horizontal"
                             android:paddingVertical="8dp">
@@ -133,7 +134,7 @@
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
                                 android:src="@drawable/ic_light_mode"
-                                app:tint="@color/secondary" />
+                                app:tint="?android:textColorHighlight" />
 
                             <TextView
                                 android:layout_width="0dp"
@@ -152,6 +153,85 @@
                                 android:layout_height="wrap_content"
                                 android:checked="false"
                                 tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:paddingVertical="8dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="8dp"
+                                android:gravity="center"
+                                android:orientation="horizontal">
+
+                                <ImageView
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:src="@drawable/ic_map"
+                                    app:tint="?android:textColorHighlight" />
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginHorizontal="8dp"
+                                    android:layout_weight="1"
+                                    android:fontFamily="@font/poppins"
+                                    android:includeFontPadding="false"
+                                    android:text="@string/map_mode"
+                                    android:textColor="?android:textColorSecondary"
+                                    android:textSize="16sp" />
+
+                            </LinearLayout>
+
+                            <RadioGroup
+                                android:id="@+id/rg_map_mode"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="32dp"
+                                android:orientation="vertical">
+
+                                <androidx.appcompat.widget.AppCompatRadioButton
+                                    android:id="@+id/rb_mode_hybrid"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins"
+                                    android:includeFontPadding="false"
+                                    android:minWidth="0dp"
+                                    android:minHeight="0dp"
+                                    android:text="@string/hybrid"
+                                    android:textColor="?android:textColorSecondary"
+                                    android:textSize="16sp" />
+
+                                <androidx.appcompat.widget.AppCompatRadioButton
+                                    android:id="@+id/rb_mode_satellite"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins"
+                                    android:includeFontPadding="false"
+                                    android:minWidth="0dp"
+                                    android:minHeight="0dp"
+                                    android:text="@string/night"
+                                    android:textColor="?android:textColorSecondary"
+                                    android:textSize="16sp" />
+
+                                <androidx.appcompat.widget.AppCompatRadioButton
+                                    android:id="@+id/rb_mode_traffic"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/poppins"
+                                    android:includeFontPadding="false"
+                                    android:minWidth="0dp"
+                                    android:minHeight="0dp"
+                                    android:text="@string/normal"
+                                    android:textColor="?android:textColorSecondary"
+                                    android:textSize="16sp" />
+
+                            </RadioGroup>
 
                         </LinearLayout>
 

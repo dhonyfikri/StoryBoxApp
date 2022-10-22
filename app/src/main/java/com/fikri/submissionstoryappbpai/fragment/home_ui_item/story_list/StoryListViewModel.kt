@@ -8,13 +8,13 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.fikri.submissionstoryappbpai.data_model.Story
 import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
-import com.fikri.submissionstoryappbpai.repository.BasicStoryRepository
+import com.fikri.submissionstoryappbpai.repository.StoryRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class StoryListViewModel(private val basicStoryRepository: BasicStoryRepository) : ViewModel() {
+class StoryListViewModel(private val storyRepository: StoryRepository) : ViewModel() {
 
     private val _token = MutableLiveData<String>()
     val token: LiveData<String> = _token
@@ -28,9 +28,12 @@ class StoryListViewModel(private val basicStoryRepository: BasicStoryRepository)
     var storyCountInDatabase = 0
     var storyAdapterIsEmpty = false
     var adapterInitialLoading = false
-
+    var scrollToTopAfterAdapterSuccessfullyRefreshed = true
     var offlineAlertAlpha = 0f
     var offlineAlertTranslationY = -120f
+
+    var lastPagingSuccessCode: String? = null
+    var currentPagingSuccessCode: LiveData<String> = storyRepository.getCurrentPagingSuccessCode()
 
     init {
         getToken()
@@ -40,7 +43,7 @@ class StoryListViewModel(private val basicStoryRepository: BasicStoryRepository)
         viewModelScope.launch(Dispatchers.Default) {
             withContext(Dispatchers.Main) {
                 val tokenResult =
-                    basicStoryRepository.getPref().getDataStoreValue(DataStorePreferences.TOKEN_KEY)
+                    storyRepository.getPref().getDataStoreValue(DataStorePreferences.TOKEN_KEY)
                         .first()
                 prepareStoryPaging(tokenResult)
                 _token.value = tokenResult
@@ -49,13 +52,13 @@ class StoryListViewModel(private val basicStoryRepository: BasicStoryRepository)
     }
 
     private fun prepareStoryPaging(token: String) {
-        stories = basicStoryRepository.getBasicStory(token).cachedIn(viewModelScope)
+        stories = storyRepository.getBasicStory(token).cachedIn(viewModelScope)
     }
 
-    fun getStoryCount(): LiveData<Int> = basicStoryRepository.getDatabase().storyDao().getBasicStoryCount()
+    fun getStoryCount(): LiveData<Int> = storyRepository.getDatabase().storyDao().getBasicStoryCount()
 
     fun syncStoryListEmptyState() {
-        _showEmptyStoryMessage.value = storyAdapterIsEmpty && storyCountInDatabase == 0
+        _showEmptyStoryMessage.value = storyAdapterIsEmpty && storyCountInDatabase == 0 && !adapterInitialLoading
     }
 
     fun changeAdapterLoadingState(isLoading: Boolean) {

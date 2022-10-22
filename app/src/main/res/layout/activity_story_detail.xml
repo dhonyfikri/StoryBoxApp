@@ -43,7 +43,7 @@
                     android:ellipsize="end"
                     android:fontFamily="@font/poppins"
                     android:maxLines="2"
-                    android:textColor="@color/text_secondary"
+                    android:textColor="?android:textColorSecondary"
                     android:textSize="14sp"
                     tools:text="Tanggal unggah: Minggu, 25 September 2022" />
 
@@ -94,7 +94,7 @@
                         android:ellipsize="end"
                         android:fontFamily="@font/poppins_bold"
                         android:maxLines="4"
-                        android:textColor="@color/primary"
+                        android:textColor="?android:textColorHighlight"
                         android:textSize="16sp"
                         tools:text="Dakocan Kristoper Cassanova" />
 
@@ -117,14 +117,15 @@
                     android:layout_height="2dp"
                     android:layout_gravity="bottom"
                     android:layout_weight="1"
-                    android:background="@color/primary" />
+                    android:background="?android:fillColor" />
 
                 <ImageView
                     android:id="@+id/iv_pencil"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@drawable/ic_pencil"
-                    tools:ignore="ContentDescription" />
+                    tools:ignore="ContentDescription"
+                    app:tint="?android:fillColor" />
 
             </LinearLayout>
 
@@ -138,7 +139,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins"
-                    android:textColor="@color/text_primary"
+                    android:textColor="?android:textColorSecondary"
                     android:textSize="16sp"
                     tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." />
 

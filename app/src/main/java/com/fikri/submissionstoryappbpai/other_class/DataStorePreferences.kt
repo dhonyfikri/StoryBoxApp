@@ -16,6 +16,12 @@ class DataStorePreferences private constructor(private val dataStore: DataStore<
         val USER_ID_KEY = stringPreferencesKey("user_id")
         val NAME_KEY = stringPreferencesKey("name")
         val DARK_MODE_KEY = booleanPreferencesKey("dark_mode")
+        val MAP_MODE_KEY = stringPreferencesKey("map_mode")
+        val PAGING_SUCCESS_CODE_KEY = stringPreferencesKey("paging_success_CODE")
+
+        const val MODE_HYBRID = "mode_hybrid"
+        const val MODE_NIGHT = "mode_night"
+        const val MODE_NORMAL = "mode_normal"
 
         @Volatile
         private var INSTANCE: DataStorePreferences? = null
@@ -33,10 +39,16 @@ class DataStorePreferences private constructor(private val dataStore: DataStore<
     fun getDataStoreValue(keyParamsString: Preferences.Key<String>): Flow<String> {
         return dataStore.data.map { preferences ->
             preferences[keyParamsString]
-                ?: if (keyParamsString == SESSION_KEY || keyParamsString == LAST_LOGIN_KEY) {
-                    "0001-01-01 00:00:00.00"
-                } else {
-                    ""
+                ?: when (keyParamsString) {
+                    SESSION_KEY, LAST_LOGIN_KEY -> {
+                        "0001-01-01 00:00:00.00"
+                    }
+                    MAP_MODE_KEY -> {
+                        MODE_HYBRID
+                    }
+                    else -> {
+                        ""
+                    }
                 }
         }
     }

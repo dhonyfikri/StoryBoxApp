@@ -2,7 +2,6 @@ package com.fikri.submissionstoryappbpai.fragment.home_ui_item.more_menu
 
 import android.content.Context
 import android.os.Bundle
-import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +11,9 @@ import com.fikri.submissionstoryappbpai.R
 import com.fikri.submissionstoryappbpai.databinding.FragmentMoreMenuBinding
 import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
 import com.fikri.submissionstoryappbpai.other_class.dataStore
-import com.fikri.submissionstoryappbpai.other_class.toDate
+import com.fikri.submissionstoryappbpai.other_class.withDateFormat
 import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithDataStorePrefFactory
+import java.text.DateFormat
 
 class MoreMenuFragment : Fragment() {
 
@@ -22,8 +22,7 @@ class MoreMenuFragment : Fragment() {
         const val APPLICATION_DETAILS_OPTIONS = "application_details_option"
     }
 
-    private var _binding: FragmentMoreMenuBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentMoreMenuBinding? = null
 
     private lateinit var viewModel: MoreMenuViewModel
     private lateinit var ctx: Context
@@ -34,8 +33,8 @@ class MoreMenuFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentMoreMenuBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentMoreMenuBinding.inflate(inflater, container, false)
+        return binding?.root as View
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -47,25 +46,26 @@ class MoreMenuFragment : Fragment() {
             ViewModelWithDataStorePrefFactory(pref)
         )[MoreMenuViewModel::class.java]
 
-        binding.llDisplayConfiguration.setOnClickListener {
+        binding?.llDisplayConfiguration?.setOnClickListener {
             settingFragListener.onOptionClicked(DISPLAY_OPTIONS)
         }
 
-        binding.llApplicationDetails.setOnClickListener {
+        binding?.llApplicationDetails?.setOnClickListener {
             settingFragListener.onOptionClicked(APPLICATION_DETAILS_OPTIONS)
         }
 
-        binding.btnLogout.setOnClickListener {
+        binding?.btnLogout?.setOnClickListener {
             settingFragListener.onLogoutRequest()
         }
 
         viewModel.getUserName().observe(requireActivity()) { name ->
-            binding.tvUserName.text = name
+            binding?.tvUserName?.text = name
         }
 
         viewModel.getActualLastLogin().observe(requireActivity()) { stringDate ->
-            val lastLogin = DateUtils.getRelativeTimeSpanString(stringDate.toDate().time)
-            binding.tvLastLogin.text = getString(R.string.login_since, lastLogin.toString())
+            val lastLogin =
+                stringDate.withDateFormat(type = DateFormat.FULL, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
+            binding?.tvLastLogin?.text = getString(R.string.login_since, lastLogin)
         }
     }
 
@@ -77,7 +77,7 @@ class MoreMenuFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding = null
     }
 
     interface SettingFragListener {

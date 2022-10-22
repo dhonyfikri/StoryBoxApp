@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [BasicStory::class, GeolocationStory::class, RemoteKeys::class],
+    entities = [BasicStory::class, RemoteKeys::class],
     version = 1,
     exportSchema = false
 )

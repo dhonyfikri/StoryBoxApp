@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.fikri.submissionstoryappbpai.R
 import com.fikri.submissionstoryappbpai.activity.StoryDetailActivity
@@ -26,8 +27,9 @@ import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithInjectio
 
 class StoryListFragment : Fragment() {
 
-    private var _binding: FragmentStoryListBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentStoryListBinding? = null
+
+    private lateinit var storyListListener: StoryListListener
 
     private lateinit var viewModel: StoryListViewModel
     private lateinit var ctx: Context
@@ -38,8 +40,8 @@ class StoryListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentStoryListBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentStoryListBinding.inflate(inflater, container, false)
+        return binding?.root as View
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,7 +57,7 @@ class StoryListFragment : Fragment() {
             ViewModelWithInjectionFactory(ctx)
         )[StoryListViewModel::class.java]
 
-        binding.srlSwipeRefeshStoryList.setColorSchemeColors(
+        binding?.srlSwipeRefeshStoryList?.setColorSchemeColors(
             ContextCompat.getColor(
                 ctx,
                 R.color.secondary
@@ -65,8 +67,7 @@ class StoryListFragment : Fragment() {
 
     private fun setupAction() {
         viewModel.apply {
-            binding.apply {
-
+            binding?.apply {
                 adapter.addLoadStateListener { combinedLoadStates ->
                     combinedLoadStates.decideOnState(
                         adapter.itemCount,
@@ -89,22 +90,19 @@ class StoryListFragment : Fragment() {
                         },
                         showError = {
                             setShowOfflineAlert(true)
-                        }
+                        },
                     )
                 }
 
                 cvOfflineAlert.setOnClickListener {
                     if (!adapterInitialLoading) {
-                        if (adapter.itemCount > 0) {
-                            rvStoryList.scrollToPosition(0)
-                        }
+                        getFreshStory()
                     }
-                    adapter.retry()
                 }
 
                 srlSwipeRefeshStoryList.setOnRefreshListener {
                     srlSwipeRefeshStoryList.isRefreshing = false
-                    adapter.refresh()
+                    getFreshStory()
                 }
 
                 rvStoryList.layoutManager = LinearLayoutManager(ctx)
@@ -132,68 +130,106 @@ class StoryListFragment : Fragment() {
                         getStory()
                     }
                 }
+
+                currentPagingSuccessCode.observe(requireActivity()) { code ->
+                    if (lastPagingSuccessCode == null) {
+                        lastPagingSuccessCode = code
+                    } else {
+                        if (lastPagingSuccessCode != code) {
+                            lastPagingSuccessCode = code
+                            if (scrollToTopAfterAdapterSuccessfullyRefreshed) {
+                                scrollToTopAfterAdapterSuccessfullyRefreshed = false
+                                adapter.submitData(lifecycle, PagingData.empty())
+                                getStory()
+                            }
+                        }
+                    }
+                }
             }
         }
     }
 
     private fun getStory() {
-        binding.rvStoryList.adapter = adapter.withLoadStateFooter(
-            footer = LoadingStateAdapter(ctx) {
-                adapter.retry()
-            }
-        )
-        viewModel.stories.observe(requireActivity()) { data ->
-            adapter.submitData(lifecycle, data)
-        }
+        viewModel.apply {
+            binding?.apply {
+                rvStoryList.adapter = adapter.withLoadStateFooter(
+                    footer = LoadingStateAdapter(ctx) {
+                        adapter.retry()
+                    }
+                )
+                stories.observe(requireActivity()) { data ->
+                    adapter.submitData(lifecycle, data)
+                }
 
-        adapter.setOnItemClickCallback(object : ListStoryAdapter.OnItemClickCallback {
-            override fun onClickedItem(data: Story, imageThumbnailsView: View) {
-                val moveToStoryDetail = Intent(
-                    ctx, StoryDetailActivity::class.java
-                )
-                moveToStoryDetail.putExtra(StoryDetailActivity.EXTRA_STORY, data)
-                startActivity(
-                    moveToStoryDetail, ActivityOptionsCompat.makeSceneTransitionAnimation(
-                        ctx as Activity, Pair(imageThumbnailsView, "image_detail")
-                    ).toBundle()
-                )
+                adapter.setOnItemClickCallback(object : ListStoryAdapter.OnItemClickCallback {
+                    override fun onClickedItem(data: Story, imageThumbnailsView: View) {
+                        val moveToStoryDetail = Intent(
+                            ctx, StoryDetailActivity::class.java
+                        )
+                        moveToStoryDetail.putExtra(StoryDetailActivity.EXTRA_STORY, data)
+                        startActivity(
+                            moveToStoryDetail, ActivityOptionsCompat.makeSceneTransitionAnimation(
+                                ctx as Activity, Pair(imageThumbnailsView, "image_detail")
+                            ).toBundle()
+                        )
+                    }
+                })
             }
-        })
+        }
     }
 
     private fun setShowOfflineAlert(isShowing: Boolean = false) {
-        if (isShowing) {
-            viewModel.offlineAlertAlpha = 1f
-            viewModel.offlineAlertTranslationY = 0f
-        } else {
-            viewModel.offlineAlertAlpha = 0f
-            viewModel.offlineAlertTranslationY = -120f
+        viewModel.apply {
+            binding?.apply {
+                if (isShowing) {
+                    offlineAlertAlpha = 1f
+                    offlineAlertTranslationY = 0f
+                } else {
+                    offlineAlertAlpha = 0f
+                    offlineAlertTranslationY = -120f
+                }
+                AnimatorSet().apply {
+                    playTogether(
+                        ObjectAnimator.ofFloat(
+                            cvOfflineAlert,
+                            View.TRANSLATION_Y,
+                            viewModel.offlineAlertTranslationY
+                        ).setDuration(500),
+                        ObjectAnimator.ofFloat(
+                            cvOfflineAlert,
+                            View.ALPHA,
+                            viewModel.offlineAlertAlpha
+                        ).setDuration(500)
+                    )
+                    start()
+                }
+            }
         }
-        AnimatorSet().apply {
-            playTogether(
-                ObjectAnimator.ofFloat(
-                    binding.cvOfflineAlert,
-                    View.TRANSLATION_Y,
-                    viewModel.offlineAlertTranslationY
-                ).setDuration(500),
-                ObjectAnimator.ofFloat(
-                    binding.cvOfflineAlert,
-                    View.ALPHA,
-                    viewModel.offlineAlertAlpha
-                ).setDuration(500)
-            )
-            start()
-        }
+    }
+
+    fun getFreshStory() {
+        viewModel.scrollToTopAfterAdapterSuccessfullyRefreshed = true
+        adapter.refresh()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        storyListListener.onStoryListFragReady(this)
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         ctx = context
         adapter = ListStoryAdapter(ctx)
+        storyListListener = ctx as StoryListListener
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding = null
+    }
+
+    interface StoryListListener {
+        fun onStoryListFragReady(fragment: Fragment)
     }
 }

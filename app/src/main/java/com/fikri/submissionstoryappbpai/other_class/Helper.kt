@@ -9,6 +9,7 @@ import android.graphics.Matrix
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.util.Log
 import android.util.TypedValue
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
@@ -42,9 +43,12 @@ fun Context.resolveThemeAttr(@AttrRes attrRes: Int): TypedValue {
     return typedValue
 }
 
-fun String.withDateFormat(type: Int = DateFormat.DEFAULT): String {
+fun String.withDateFormat(
+    type: Int = DateFormat.DEFAULT,
+    pattern: String = "yyyy-MM-dd'T'HH:mm:ss.SS'Z'"
+): String {
     var result = this
-    val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SS'Z'", Locale.US)
+    val format = SimpleDateFormat(pattern, Locale.US)
     val date = format.parse(this) as Date
     try {
         result = DateFormat.getDateInstance(type).format(date)
@@ -54,8 +58,8 @@ fun String.withDateFormat(type: Int = DateFormat.DEFAULT): String {
     return result
 }
 
-fun String.toDate(): Date {
-    val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US)
+fun String.toDate(pattern: String = "yyyy-MM-dd HH:mm:ss.SSS"): Date {
+    val format = SimpleDateFormat(pattern, Locale.US)
     return format.parse(this) as Date
 }
 

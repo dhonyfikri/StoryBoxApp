@@ -27,7 +27,7 @@
     <string name="logout">Keluar</string>
     <string name="by">Oleh: %1$s</string>
     <string name="story">Cerita</string>
-    <string name="upload_date">Tanggal unggah: %1$s</string>
+    <string name="upload_date">Diunggah %1$s</string>
     <string name="writers_name">Nama penulis</string>
     <string name="refresh">Segarkan</string>
     <string name="no_data_available">Tidak ada data untuk ditampilkan</string>
@@ -93,4 +93,10 @@
     <string name="paging_error">Ups… Terjadi kesalahan. Coba sesaat lagi ya!</string>
     <string name="empty_story_list">Tidak ada cerita apapun</string>
     <string name="you_are_in_offline_mode">Kamu dalam mode offline</string>
+    <string name="system">Sistem</string>
+    <string name="map_mode">Mode Peta</string>
+    <string name="hybrid">Satelit</string>
+    <string name="night">Peta Malam</string>
+    <string name="normal">Peta Normal</string>
+    <string name="location_unknown">Tidak diketahui lokasinya</string>
 </resources>

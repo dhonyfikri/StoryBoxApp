@@ -38,4 +38,7 @@ data class Story(
     @field:SerializedName("lon")
     val lon: Double? = null,
 
+    @field:SerializedName("address")
+    val address: String? = null,
+
 ) : Parcelable

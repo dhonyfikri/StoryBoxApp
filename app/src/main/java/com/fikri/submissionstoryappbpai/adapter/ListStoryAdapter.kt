@@ -1,6 +1,7 @@
 package com.fikri.submissionstoryappbpai.adapter
 
 import android.content.Context
+import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,7 @@ import com.fikri.submissionstoryappbpai.R
 import com.fikri.submissionstoryappbpai.data_model.Story
 import com.fikri.submissionstoryappbpai.databinding.StoryItemBinding
 import com.fikri.submissionstoryappbpai.other_class.dpToPx
-import com.fikri.submissionstoryappbpai.other_class.withDateFormat
+import com.fikri.submissionstoryappbpai.other_class.toDate
 
 class ListStoryAdapter(private val context: Context) :
     PagingDataAdapter<Story, ListStoryAdapter.ListViewHolder>(DIFF_CALLBACK) {
@@ -46,17 +47,21 @@ class ListStoryAdapter(private val context: Context) :
             onClicked: ((value: Story, view: View) -> Unit)? = null
         ) {
             binding.apply {
-                tvItemName.text = ctx.getString(R.string.by, data.name)
+                tvItemName.text = data.name
                 tvItemName.contentDescription =
                     ctx.getString(R.string.written_by, data.name)
                 tvDescription.text = data.description
                 tvDate.text = ctx.getString(
                     R.string.upload_date,
-                    data.createdAt.withDateFormat()
+                    DateUtils.getRelativeTimeSpanString(
+                        data.createdAt.toDate("yyyy-MM-dd'T'HH:mm:ss.SS'Z'").time
+                    ).toString()
                 )
                 tvDate.contentDescription = ctx.getString(
                     R.string.uploaded_on,
-                    data.createdAt.withDateFormat()
+                    DateUtils.getRelativeTimeSpanString(
+                        data.createdAt.toDate("yyyy-MM-dd'T'HH:mm:ss.SS'Z'").time
+                    ).toString()
                 )
                 Glide.with(ctx)
                     .load(data.photoUrl)

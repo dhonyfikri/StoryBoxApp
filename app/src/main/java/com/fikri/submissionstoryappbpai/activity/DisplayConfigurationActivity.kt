@@ -1,8 +1,6 @@
 package com.fikri.submissionstoryappbpai.activity
 
 import android.content.Intent
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
 import android.os.Bundle
 import android.provider.Settings
 import android.widget.CompoundButton
@@ -14,7 +12,7 @@ import com.fikri.submissionstoryappbpai.R
 import com.fikri.submissionstoryappbpai.databinding.ActivityDisplayConfigurationBinding
 import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
 import com.fikri.submissionstoryappbpai.other_class.dataStore
-import com.fikri.submissionstoryappbpai.repository.DisplayConfigurationViewModel
+import com.fikri.submissionstoryappbpai.view_model.DisplayConfigurationViewModel
 import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithDataStorePrefFactory
 
 class DisplayConfigurationActivity : AppCompatActivity() {
@@ -28,43 +26,67 @@ class DisplayConfigurationActivity : AppCompatActivity() {
         binding = ActivityDisplayConfigurationBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setupData()
+        setupAction()
+    }
+
+    private fun setupData() {
         val pref = DataStorePreferences.getInstance(dataStore)
         viewModel = ViewModelProvider(
             this,
             ViewModelWithDataStorePrefFactory(pref)
         )[DisplayConfigurationViewModel::class.java]
+    }
 
-        binding.swThemeSwitch.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
-            viewModel.saveThemeSetting(isChecked)
-        }
+    private fun setupAction() {
+        viewModel.apply {
+            binding.apply {
 
-        binding.llLanguageOptions.setOnClickListener {
-            startActivity(Intent(Settings.ACTION_LOCALE_SETTINGS))
-        }
+                llLanguageOptions.setOnClickListener {
+                    startActivity(Intent(Settings.ACTION_LOCALE_SETTINGS))
+                }
 
-        viewModel.getThemeSettings().observe(this) { isDarkModeActive: Boolean ->
-            if (isDarkModeActive) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                binding.ivThemeMode.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        this,
-                        R.drawable.ic_night_mode
-                    )
-                )
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                binding.ivThemeMode.setImageDrawable(
-                    ContextCompat.getDrawable(
-                        this,
-                        R.drawable.ic_light_mode
-                    )
-                )
+                swThemeSwitch.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+                    saveThemeSetting(isChecked)
+                }
+
+                rgMapMode.setOnCheckedChangeListener { _, item ->
+                    when (item) {
+                        R.id.rb_mode_hybrid -> saveMapMode(DataStorePreferences.MODE_HYBRID)
+                        R.id.rb_mode_satellite -> saveMapMode(DataStorePreferences.MODE_NIGHT)
+                        R.id.rb_mode_traffic -> saveMapMode(DataStorePreferences.MODE_NORMAL)
+                    }
+                }
+
+                getThemeSettings().observe(this@DisplayConfigurationActivity) { isDarkModeActive: Boolean ->
+                    if (isDarkModeActive) {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                        ivThemeMode.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                this@DisplayConfigurationActivity,
+                                R.drawable.ic_night_mode
+                            )
+                        )
+                    } else {
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                        ivThemeMode.setImageDrawable(
+                            ContextCompat.getDrawable(
+                                this@DisplayConfigurationActivity,
+                                R.drawable.ic_light_mode
+                            )
+                        )
+                    }
+                    swThemeSwitch.isChecked = isDarkModeActive
+                }
+
+                getMapMode().observe(this@DisplayConfigurationActivity) { mapMode ->
+                    when (mapMode) {
+                        DataStorePreferences.MODE_HYBRID -> rbModeHybrid.isChecked = true
+                        DataStorePreferences.MODE_NIGHT -> rbModeSatellite.isChecked = true
+                        DataStorePreferences.MODE_NORMAL -> rbModeTraffic.isChecked = true
+                    }
+                }
             }
-            binding.ivThemeMode.colorFilter = PorterDuffColorFilter(
-                ContextCompat.getColor(this, R.color.secondary),
-                PorterDuff.Mode.SRC_IN
-            )
-            binding.swThemeSwitch.isChecked = isDarkModeActive
         }
     }
 }

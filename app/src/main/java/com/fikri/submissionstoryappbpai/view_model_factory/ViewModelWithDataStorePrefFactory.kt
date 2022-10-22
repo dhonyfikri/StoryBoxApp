@@ -3,9 +3,8 @@ package com.fikri.submissionstoryappbpai.view_model_factory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.fikri.submissionstoryappbpai.fragment.home_ui_item.more_menu.MoreMenuViewModel
-import com.fikri.submissionstoryappbpai.fragment.home_ui_item.story_list.StoryListViewModel
 import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
-import com.fikri.submissionstoryappbpai.repository.DisplayConfigurationViewModel
+import com.fikri.submissionstoryappbpai.view_model.DisplayConfigurationViewModel
 import com.fikri.submissionstoryappbpai.view_model.*
 
 class ViewModelWithDataStorePrefFactory(private val pref: DataStorePreferences) :

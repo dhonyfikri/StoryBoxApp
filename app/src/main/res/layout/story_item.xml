@@ -27,49 +27,67 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="16dp">
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="16dp">
 
-            <TextView
-                android:id="@+id/tv_item_name"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:fontFamily="@font/poppins_medium"
-                android:maxLines="1"
-                android:textColor="@color/primary"
-                android:textSize="14sp"
-                tools:text="Oleh: Dakocan Kristoper Cassanova" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
+                android:layout_marginEnd="4dp"
                 android:layout_marginBottom="8dp"
-                android:background="@color/primary" />
+                android:gravity="center"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_account_circle"
+                    app:tint="@color/tertiary"
+                    tools:ignore="ContentDescription" />
+
+                <TextView
+                    android:id="@+id/tv_item_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:maxLines="1"
+                    android:textColor="?android:textColorSecondary"
+                    android:textSize="18sp"
+                    tools:text="Indry Puji Lestari" />
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tv_description"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_marginHorizontal="4dp"
                 android:layout_weight="1"
                 android:ellipsize="end"
                 android:fontFamily="@font/poppins"
                 android:maxLines="4"
                 android:textColor="?android:textColorSecondary"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." />
 
             <TextView
                 android:id="@+id/tv_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="4dp"
                 android:layout_marginTop="8dp"
                 android:ellipsize="end"
                 android:fontFamily="@font/poppins"
                 android:maxLines="1"
-                android:textColor="@color/secondary"
-                android:textSize="10sp"
+                android:textColor="?android:textColorSecondary"
+                android:textSize="12sp"
                 tools:ignore="SmallSp"
-                tools:text="Tanggal unggah: 25/09/2022" />
+                tools:text="Diunggah 2 hari yang lalu" />
 
         </LinearLayout>
 

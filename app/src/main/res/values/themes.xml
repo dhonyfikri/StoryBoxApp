@@ -14,6 +14,8 @@
         <!-- Customize your theme here. -->
         <item name="android:textColorPrimary">@color/text_primary</item>
         <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:textColorHighlight">@color/secondary</item>
+        <item name="android:fillColor">@color/primary</item>
         <item name="android:color">@color/white</item>
     </style>
 

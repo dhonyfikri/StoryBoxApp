@@ -15,8 +15,7 @@ class CreateStoryOptionsFragment : Fragment() {
         const val CREATE_GEOLOCATION_STORY = "create_geolocation_story"
     }
 
-    private var _binding: FragmentCreateStoryOptionsBinding? = null
-    private val binding get() = _binding!!
+    private var binding: FragmentCreateStoryOptionsBinding? = null
 
     private lateinit var ctx: Context
     private lateinit var createStoryOptionsListener: CreateStoryOptionsListener
@@ -26,19 +25,25 @@ class CreateStoryOptionsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentCreateStoryOptionsBinding.inflate(inflater, container, false)
-        return binding.root
+        binding = FragmentCreateStoryOptionsBinding.inflate(inflater, container, false)
+        return binding?.root as View
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.cvCreateStory.setOnClickListener {
-            createStoryOptionsListener.onCreateStoryOptionsClicked(CREATE_BASIC_STORY)
-        }
+        setupAction()
+    }
 
-        binding.cvCreateGeolocationStory.setOnClickListener {
-            createStoryOptionsListener.onCreateStoryOptionsClicked(CREATE_GEOLOCATION_STORY)
+    private fun setupAction() {
+        binding?.apply {
+            cvCreateStory.setOnClickListener {
+                createStoryOptionsListener.onCreateStoryOptionsClicked(CREATE_BASIC_STORY)
+            }
+
+            cvCreateGeolocationStory.setOnClickListener {
+                createStoryOptionsListener.onCreateStoryOptionsClicked(CREATE_GEOLOCATION_STORY)
+            }
         }
     }
 
@@ -50,10 +55,10 @@ class CreateStoryOptionsFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        binding = null
     }
 
-    interface CreateStoryOptionsListener{
+    interface CreateStoryOptionsListener {
         fun onCreateStoryOptionsClicked(options: String)
     }
 }

@@ -1,4 +1,4 @@
-package com.fikri.submissionstoryappbpai.repository
+package com.fikri.submissionstoryappbpai.view_model
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
@@ -15,6 +15,16 @@ class DisplayConfigurationViewModel(private val pref: DataStorePreferences) : Vi
     fun saveThemeSetting(isDarkModeActive: Boolean) {
         viewModelScope.launch {
             pref.saveDataStoreValue(DataStorePreferences.DARK_MODE_KEY, isDarkModeActive)
+        }
+    }
+
+    fun getMapMode(): LiveData<String> {
+        return pref.getDataStoreValue(DataStorePreferences.MAP_MODE_KEY).asLiveData()
+    }
+
+    fun saveMapMode(type: String) {
+        viewModelScope.launch {
+            pref.saveDataStoreValue(DataStorePreferences.MAP_MODE_KEY, type)
         }
     }
 }
