@@ -65,6 +65,10 @@ class StoryDetailActivity : AppCompatActivity() {
                 tvDetailName.contentDescription =
                     resources.getString(R.string.uploaded_by, story.name)
                 tvDetailDescription.text = story.description
+                story.address?.let {
+                    tvAddress.visibility = View.VISIBLE
+                    tvAddress.text = it
+                }
             }
         } else {
             Glide.with(this@StoryDetailActivity)
@@ -98,6 +102,7 @@ class StoryDetailActivity : AppCompatActivity() {
         binding.apply {
             tvDate.alpha = 0f
             tvDetailDescription.alpha = 0f
+            tvAddress.alpha = 0f
             rlNameLabel.translationX = Resources.getSystem().displayMetrics.widthPixels.toFloat()
             cvNameWrapper.translationX = Resources.getSystem().displayMetrics.widthPixels.toFloat()
             ivPencil.translationX =
@@ -116,6 +121,7 @@ class StoryDetailActivity : AppCompatActivity() {
 
         val descriptionText =
             ObjectAnimator.ofFloat(binding.tvDetailDescription, View.ALPHA, 1f).setDuration(500)
+        val addressText = ObjectAnimator.ofFloat(binding.tvAddress, View.ALPHA, 1f).setDuration(500)
         val nameAndDivider = AnimatorSet().apply {
             playTogether(
                 ObjectAnimator.ofFloat(binding.tvDate, View.ALPHA, 1f).setDuration(1000),
@@ -130,7 +136,7 @@ class StoryDetailActivity : AppCompatActivity() {
         }
 
         AnimatorSet().apply {
-            playSequentially(nameAndDivider, descriptionText)
+            playSequentially(nameAndDivider, descriptionText, addressText)
             start()
         }
     }

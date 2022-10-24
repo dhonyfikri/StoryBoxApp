@@ -11,12 +11,10 @@ import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import com.fikri.submissionstoryappbpai.R
 import com.fikri.submissionstoryappbpai.databinding.ActivityLoginBinding
-import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
 import com.fikri.submissionstoryappbpai.other_class.LoadingModal
 import com.fikri.submissionstoryappbpai.other_class.ResponseModal
-import com.fikri.submissionstoryappbpai.other_class.dataStore
 import com.fikri.submissionstoryappbpai.view_model.LoginViewModel
-import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithDataStorePrefFactory
+import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithInjectionFactory
 
 class LoginActivity : AppCompatActivity() {
 
@@ -43,11 +41,10 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun setupData() {
-        val pref = DataStorePreferences.getInstance(dataStore)
         viewModel =
             ViewModelProvider(
                 this,
-                ViewModelWithDataStorePrefFactory(pref)
+                ViewModelWithInjectionFactory(this)
             )[LoginViewModel::class.java]
     }
 
@@ -97,23 +94,18 @@ class LoginActivity : AppCompatActivity() {
             }
             isShowResponseModal.observe(this@LoginActivity) { isShowingResponseModal ->
                 if (isShowingResponseModal) {
-                    if (responseType == ResponseModal.TYPE_SUCCESS) {
-                        dismissResponseModal()
-                        saveLoginData()
-                    } else {
-                        responseModal.showResponseModal(
-                            this@LoginActivity,
-                            responseType,
-                            if (responseType != ResponseModal.TYPE_ERROR) {
-                                responseMessage
-                            } else {
-                                resources.getString(
-                                    R.string.connection_problem
-                                )
-                            }
-                        ) {
-                            dismissResponseModal()
+                    responseModal.showResponseModal(
+                        this@LoginActivity,
+                        responseType,
+                        if (responseType != ResponseModal.TYPE_ERROR) {
+                            responseMessage
+                        } else {
+                            resources.getString(
+                                R.string.connection_problem
+                            )
                         }
+                    ) {
+                        dismissResponseModal()
                     }
                 } else {
                     responseModal.dismiss()
@@ -121,7 +113,12 @@ class LoginActivity : AppCompatActivity() {
             }
             isTimeToHome.observe(this@LoginActivity) {
                 if (it) {
-                    startActivity(Intent(this@LoginActivity, HomeBottomNavigationActivity::class.java))
+                    startActivity(
+                        Intent(
+                            this@LoginActivity,
+                            HomeBottomNavigationActivity::class.java
+                        )
+                    )
                     finish()
                 }
             }

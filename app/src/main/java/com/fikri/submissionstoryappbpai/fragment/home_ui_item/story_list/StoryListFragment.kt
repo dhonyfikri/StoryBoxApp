@@ -27,6 +27,12 @@ import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithInjectio
 
 class StoryListFragment : Fragment() {
 
+    companion object {
+        const val INITIAL_LOAD_SIZE = 4
+        const val PAGE_SIZE = 4
+        const val PREFETCH_DISTANCE = 0
+    }
+
     private var binding: FragmentStoryListBinding? = null
 
     private lateinit var storyListListener: StoryListListener
@@ -54,7 +60,7 @@ class StoryListFragment : Fragment() {
     private fun setupData() {
         viewModel = ViewModelProvider(
             this,
-            ViewModelWithInjectionFactory(ctx)
+            ViewModelWithInjectionFactory(requireActivity())
         )[StoryListViewModel::class.java]
 
         binding?.srlSwipeRefeshStoryList?.setColorSchemeColors(

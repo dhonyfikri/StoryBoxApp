@@ -13,7 +13,7 @@ import com.fikri.submissionstoryappbpai.databinding.ActivityRegisterBinding
 import com.fikri.submissionstoryappbpai.other_class.LoadingModal
 import com.fikri.submissionstoryappbpai.other_class.ResponseModal
 import com.fikri.submissionstoryappbpai.view_model.RegisterViewModel
-import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelFactory
+import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithInjectionFactory
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
@@ -34,7 +34,10 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun setupData() {
         viewModel =
-            ViewModelProvider(this, ViewModelFactory())[RegisterViewModel::class.java]
+            ViewModelProvider(
+                this,
+                ViewModelWithInjectionFactory(this)
+            )[RegisterViewModel::class.java]
     }
 
     private fun setupAction() {
@@ -70,7 +73,12 @@ class RegisterActivity : AppCompatActivity() {
             }
 
             btnAppearance.setOnClickListener {
-                startActivity(Intent(this@RegisterActivity, DisplayConfigurationActivity::class.java))
+                startActivity(
+                    Intent(
+                        this@RegisterActivity,
+                        DisplayConfigurationActivity::class.java
+                    )
+                )
             }
         }
 
@@ -172,7 +180,8 @@ class RegisterActivity : AppCompatActivity() {
                 ObjectAnimator.ofFloat(binding.tvAskLogin, View.TRANSLATION_Y, 0F)
                     .setDuration(1000),
                 ObjectAnimator.ofFloat(binding.btnLogin, View.TRANSLATION_Y, 0F).setDuration(1000),
-                ObjectAnimator.ofFloat(binding.btnAppearance, View.TRANSLATION_Y, 0F).setDuration(1000),
+                ObjectAnimator.ofFloat(binding.btnAppearance, View.TRANSLATION_Y, 0F)
+                    .setDuration(1000),
             )
         }
 

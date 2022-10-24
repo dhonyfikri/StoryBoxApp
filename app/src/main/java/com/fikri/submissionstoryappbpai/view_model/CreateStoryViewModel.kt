@@ -4,12 +4,11 @@ import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
 import com.fikri.submissionstoryappbpai.other_class.ResponseModal
 import com.fikri.submissionstoryappbpai.repository.CreateStoryRepository
 import java.io.File
 
-class CreateStoryViewModel(private val pref: DataStorePreferences) :
+class CreateStoryViewModel(private val createStoryRepository: CreateStoryRepository) :
     ViewModel() {
 
     private val _photoBitmap = MutableLiveData<Bitmap>()
@@ -28,13 +27,13 @@ class CreateStoryViewModel(private val pref: DataStorePreferences) :
     var responseType = ResponseModal.TYPE_GENERAL
     var responseMessage: String? = null
 
-    fun uploadStory(desc: String) = CreateStoryRepository().fetchToken(pref) { token ->
+    fun uploadStory(desc: String) = createStoryRepository.fetchToken { token ->
         postDataToServer(token, desc)
     }
 
     private fun postDataToServer(token: String, desc: String) {
         _isShowLoadingModal.value = true
-        CreateStoryRepository().postDataToServer(
+        createStoryRepository.postDataToServer(
             token,
             desc,
             photo

@@ -9,7 +9,6 @@ import android.graphics.Matrix
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
-import android.util.Log
 import android.util.TypedValue
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
@@ -190,9 +189,7 @@ fun CombinedLoadStates.decideOnState(
     )
 
     showEmptyState?.invoke(
-        source.append is LoadState.NotLoading
-                && source.append.endOfPaginationReached
-                && itemCount == 0
+        source.append.endOfPaginationReached && itemCount == 0
     )
 
     val errorState = refresh as? LoadState.Error

@@ -9,10 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.fikri.submissionstoryappbpai.R
 import com.fikri.submissionstoryappbpai.databinding.FragmentMoreMenuBinding
-import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
-import com.fikri.submissionstoryappbpai.other_class.dataStore
 import com.fikri.submissionstoryappbpai.other_class.withDateFormat
-import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithDataStorePrefFactory
+import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithInjectionFactory
 import java.text.DateFormat
 
 class MoreMenuFragment : Fragment() {
@@ -40,10 +38,9 @@ class MoreMenuFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val pref = DataStorePreferences.getInstance(requireActivity().dataStore)
         viewModel = ViewModelProvider(
             this,
-            ViewModelWithDataStorePrefFactory(pref)
+            ViewModelWithInjectionFactory(requireActivity())
         )[MoreMenuViewModel::class.java]
 
         binding?.llDisplayConfiguration?.setOnClickListener {
@@ -64,7 +61,10 @@ class MoreMenuFragment : Fragment() {
 
         viewModel.getActualLastLogin().observe(requireActivity()) { stringDate ->
             val lastLogin =
-                stringDate.withDateFormat(type = DateFormat.FULL, pattern = "yyyy-MM-dd HH:mm:ss.SSS")
+                stringDate.withDateFormat(
+                    type = DateFormat.FULL,
+                    pattern = "yyyy-MM-dd HH:mm:ss.SSS"
+                )
             binding?.tvLastLogin?.text = getString(R.string.login_since, lastLogin)
         }
     }

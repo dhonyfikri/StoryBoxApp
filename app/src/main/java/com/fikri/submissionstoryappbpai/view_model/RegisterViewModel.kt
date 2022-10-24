@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.fikri.submissionstoryappbpai.other_class.ResponseModal
 import com.fikri.submissionstoryappbpai.repository.RegisterRepository
 
-class RegisterViewModel :
+class RegisterViewModel(private val registerRepository: RegisterRepository) :
     ViewModel() {
 
     private val _isShowLoading = MutableLiveData<Boolean>()
@@ -20,10 +20,10 @@ class RegisterViewModel :
 
     fun register(name: String, email: String, password: String) {
         _isShowLoading.value = true
-        RegisterRepository().register(name, email, password) { _responseType, _responseMessage ->
+        registerRepository.register(name, email, password) { responseType, responseMessage ->
             _isShowLoading.value = false
-            responseType = _responseType
-            responseMessage = _responseMessage
+            this.responseType = responseType
+            this.responseMessage = responseMessage
             _isShowResponseModal.value = true
         }
     }

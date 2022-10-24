@@ -7,10 +7,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.fikri.submissionstoryappbpai.data_model.Story
-import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
 import com.fikri.submissionstoryappbpai.repository.StoryRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -43,8 +41,7 @@ class StoryListViewModel(private val storyRepository: StoryRepository) : ViewMod
         viewModelScope.launch(Dispatchers.Default) {
             withContext(Dispatchers.Main) {
                 val tokenResult =
-                    storyRepository.getPref().getDataStoreValue(DataStorePreferences.TOKEN_KEY)
-                        .first()
+                    storyRepository.getToken()
                 prepareStoryPaging(tokenResult)
                 _token.value = tokenResult
             }
@@ -55,10 +52,11 @@ class StoryListViewModel(private val storyRepository: StoryRepository) : ViewMod
         stories = storyRepository.getBasicStory(token).cachedIn(viewModelScope)
     }
 
-    fun getStoryCount(): LiveData<Int> = storyRepository.getDatabase().storyDao().getBasicStoryCount()
+    fun getStoryCount() = storyRepository.getStoryCount()
 
     fun syncStoryListEmptyState() {
-        _showEmptyStoryMessage.value = storyAdapterIsEmpty && storyCountInDatabase == 0 && !adapterInitialLoading
+        _showEmptyStoryMessage.value =
+            storyAdapterIsEmpty && storyCountInDatabase == 0 && !adapterInitialLoading
     }
 
     fun changeAdapterLoadingState(isLoading: Boolean) {

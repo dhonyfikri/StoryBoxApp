@@ -8,7 +8,7 @@ import com.fikri.submissionstoryappbpai.R
 import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
 import com.fikri.submissionstoryappbpai.repository.HomeBottomNavRepository
 
-class HomeBottomNavViewModel(private val pref: DataStorePreferences) : ViewModel() {
+class HomeBottomNavViewModel(private val homeBottomNavRepository: HomeBottomNavRepository) : ViewModel() {
 
     val storyListIcon = R.drawable.ic_list
     val storyMapsIcon = R.drawable.ic_map
@@ -20,10 +20,14 @@ class HomeBottomNavViewModel(private val pref: DataStorePreferences) : ViewModel
 
     var navController: NavController? = null
     var requestToRefreshAdapterAfterAddNewPost = false
+    var requestToRefreshMapAfterAddNewPost = false
+    var isSplashing = false
+    var requestLat: Double = 0.0
+    var requestLng: Double = 0.0
 
     fun changeHeaderIcon(icon: Int) {
         _headerIcon.value = icon
     }
 
-    fun clearDataStore() = HomeBottomNavRepository().clearDataStore(pref)
+    fun clearDataStore() = homeBottomNavRepository.clearDataStore()
 }

@@ -5,14 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fikri.submissionstoryappbpai.data_model.LoginResponseModel
-import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
 import com.fikri.submissionstoryappbpai.other_class.ResponseModal
 import com.fikri.submissionstoryappbpai.repository.LoginRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class LoginViewModel(private val pref: DataStorePreferences) :
+class LoginViewModel(private val loginRepository: LoginRepository) :
     ViewModel() {
 
     private val _isShowLoading = MutableLiveData<Boolean>()
@@ -29,24 +28,26 @@ class LoginViewModel(private val pref: DataStorePreferences) :
 
     fun login(email: String, password: String) {
         _isShowLoading.value = true
-        LoginRepository().login(
+        loginRepository.login(
             email,
             password
-        ) { _responseType, _responseMessage, _loginResponse ->
+        ) { responseType, responseMessage, loginResponse ->
             _isShowLoading.value = false
-            if (_loginResponse != null) {
-                loginResponse = _loginResponse
+            if (responseType == ResponseModal.TYPE_SUCCESS && loginResponse != null) {
+                this.loginResponse = loginResponse
+                saveLoginData()
+            } else {
+                this.responseType = responseType
+                this.responseMessage = responseMessage
+                _isShowResponseModal.value = true
             }
-            responseType = _responseType
-            responseMessage = _responseMessage
-            _isShowResponseModal.value = true
         }
     }
 
-    fun saveLoginData() {
-        viewModelScope.launch(Dispatchers.Default) {
+    private fun saveLoginData() {
+        viewModelScope.launch {
             withContext(Dispatchers.Main) {
-                LoginRepository().saveLoginData(loginResponse?.loginResult, pref)
+                loginRepository.saveLoginData(loginResponse?.loginResult)
                 _isTimeToHome.value = true
             }
         }

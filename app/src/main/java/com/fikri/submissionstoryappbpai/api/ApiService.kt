@@ -48,4 +48,14 @@ interface ApiService {
         @Part file: MultipartBody.Part,
         @Part("description") description: RequestBody
     ): Call<AddStoryResponseModel>
+
+    @Multipart
+    @POST("stories")
+    fun addGeolocationStory(
+        @Header("Authorization") authorization: String,
+        @Part file: MultipartBody.Part,
+        @Part("description") description: RequestBody,
+        @Part("lat") latitude: RequestBody,
+        @Part("lon") longitude: RequestBody
+    ): Call<AddStoryResponseModel>
 }

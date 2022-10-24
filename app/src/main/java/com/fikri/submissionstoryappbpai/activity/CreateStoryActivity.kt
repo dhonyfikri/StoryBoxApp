@@ -22,7 +22,7 @@ import com.fikri.submissionstoryappbpai.R
 import com.fikri.submissionstoryappbpai.databinding.ActivityCreateStoryBinding
 import com.fikri.submissionstoryappbpai.other_class.*
 import com.fikri.submissionstoryappbpai.view_model.CreateStoryViewModel
-import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithDataStorePrefFactory
+import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithInjectionFactory
 import java.io.File
 import java.io.FileOutputStream
 
@@ -52,11 +52,10 @@ class CreateStoryActivity : AppCompatActivity() {
     }
 
     private fun setupData() {
-        val pref = DataStorePreferences.getInstance(dataStore)
         viewModel =
             ViewModelProvider(
                 this,
-                ViewModelWithDataStorePrefFactory(pref)
+                ViewModelWithInjectionFactory(this)
             )[CreateStoryViewModel::class.java]
 
         if (!allPermissionsGranted()) {
@@ -148,10 +147,10 @@ class CreateStoryActivity : AppCompatActivity() {
                     ) {
                         val intent = Intent()
                         intent.putExtra(
-                            HomeActivity.CREATE_STORY_SUCCESS,
+                            HomeBottomNavigationActivity.CREATE_STORY_SUCCESS,
                             true
                         )
-                        setResult(HomeActivity.CREATE_STORY_RESULT, intent)
+                        setResult(HomeBottomNavigationActivity.CREATE_STORY_RESULT, intent)
 
                         dismissResponseModal()
                         finish()

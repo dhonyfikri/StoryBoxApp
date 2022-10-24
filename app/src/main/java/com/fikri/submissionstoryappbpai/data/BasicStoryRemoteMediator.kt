@@ -85,11 +85,12 @@ class BasicStoryRemoteMediator(
                 database.remoteKeysDao().insertAll(keys)
                 database.storyDao().insertBasicStory(responseData)
             }
-            pref.saveDataStoreValue(
-                DataStorePreferences.PAGING_SUCCESS_CODE_KEY,
-                (1000000..9999999).random().toString()
-            )
-            return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
+            return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached).also {
+                pref.saveDataStoreValue(
+                    DataStorePreferences.PAGING_SUCCESS_CODE_KEY,
+                    (1000000..9999999).random().toString()
+                )
+            }
         } catch (exception: Exception) {
             return MediatorResult.Error(exception)
         }

@@ -11,9 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.fikri.submissionstoryappbpai.R
 import com.fikri.submissionstoryappbpai.databinding.ActivityDisplayConfigurationBinding
 import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
-import com.fikri.submissionstoryappbpai.other_class.dataStore
 import com.fikri.submissionstoryappbpai.view_model.DisplayConfigurationViewModel
-import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithDataStorePrefFactory
+import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithInjectionFactory
 
 class DisplayConfigurationActivity : AppCompatActivity() {
 
@@ -31,10 +30,9 @@ class DisplayConfigurationActivity : AppCompatActivity() {
     }
 
     private fun setupData() {
-        val pref = DataStorePreferences.getInstance(dataStore)
         viewModel = ViewModelProvider(
             this,
-            ViewModelWithDataStorePrefFactory(pref)
+            ViewModelWithInjectionFactory(this)
         )[DisplayConfigurationViewModel::class.java]
     }
 

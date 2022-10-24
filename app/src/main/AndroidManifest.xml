@@ -52,8 +52,10 @@
             android:exported="false"
             android:label="@string/title_activity_home_bottom_navigation" />
         <activity
-            android:name=".activity.CobaActivity"
-            android:exported="false" />
+            android:name=".activity.CreateStoryMapActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activity.CameraShotActivity"
             android:exported="false" />
@@ -64,9 +66,6 @@
             android:name=".activity.StoryDetailActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.HomeActivity"
-            android:exported="false" />
-        <activity
             android:name=".activity.RegisterActivity"
             android:exported="false" />
         <activity
@@ -74,8 +73,8 @@
             android:exported="false" />
         <activity
             android:name=".activity.MainActivity"
-            android:noHistory="true"
-            android:exported="true">
+            android:exported="true"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

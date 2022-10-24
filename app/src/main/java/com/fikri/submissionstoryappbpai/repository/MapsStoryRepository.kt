@@ -10,6 +10,7 @@ import com.fikri.submissionstoryappbpai.data_model.AllStoryResponseModel
 import com.fikri.submissionstoryappbpai.data_model.Story
 import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
 import com.fikri.submissionstoryappbpai.other_class.RefreshModal
+import com.fikri.submissionstoryappbpai.other_class.dataStore
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
@@ -23,9 +24,10 @@ import java.util.*
 
 class MapsStoryRepository(
     private val context: Context,
-    private val pref: DataStorePreferences,
     private val apiService: ApiService
 ) {
+    val pref = DataStorePreferences.getInstance(context.dataStore)
+
     suspend fun getToken(): String {
         return withContext(Dispatchers.Main) {
             pref.getDataStoreValue(DataStorePreferences.TOKEN_KEY).first()
@@ -37,7 +39,7 @@ class MapsStoryRepository(
         onSuccess: ((stories: ArrayList<Story>, message: String) -> Unit)? = null,
         onFailed: ((responseType: String, message: String) -> Unit)? = null
     ) {
-        val apiRequest = apiService.getAllStories("Bearer $token", 100, 1)
+        val apiRequest = apiService.getAllStories("Bearer $token", 400, 1)
         apiRequest.enqueue(object : Callback<AllStoryResponseModel> {
             override fun onResponse(
                 call: Call<AllStoryResponseModel>,

@@ -8,10 +8,8 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.util.Pair
 import androidx.lifecycle.ViewModelProvider
 import com.fikri.submissionstoryappbpai.databinding.ActivityMainBinding
-import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
-import com.fikri.submissionstoryappbpai.other_class.dataStore
 import com.fikri.submissionstoryappbpai.view_model.MainActivityViewModel
-import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithDataStorePrefFactory
+import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithInjectionFactory
 
 class MainActivity : AppCompatActivity() {
 
@@ -29,17 +27,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupData() {
-        val pref = DataStorePreferences.getInstance(dataStore)
         viewModel =
             ViewModelProvider(
                 this,
-                ViewModelWithDataStorePrefFactory(pref)
+                ViewModelWithInjectionFactory(this)
             )[MainActivityViewModel::class.java]
     }
 
     private fun setupAction() {
         viewModel.apply {
-            viewModel.getThemeSettings().observe(this@MainActivity) { isDarkModeActive: Boolean ->
+            viewModel.themeSetting.observe(this@MainActivity) { isDarkModeActive: Boolean ->
                 if (isDarkModeActive) {
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                 } else {

@@ -14,20 +14,20 @@ import android.view.animation.LinearInterpolator
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.fikri.submissionstoryappbpai.R
 import com.fikri.submissionstoryappbpai.data_model.CameraMapPosition
 import com.fikri.submissionstoryappbpai.data_model.Story
 import com.fikri.submissionstoryappbpai.databinding.FragmentStoryMapsBinding
-import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
-import com.fikri.submissionstoryappbpai.other_class.dpToPx
-import com.fikri.submissionstoryappbpai.other_class.toDate
+import com.fikri.submissionstoryappbpai.other_class.*
 import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithInjectionFactory
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
+import kotlinx.coroutines.launch
 
 class StoryMapsFragment : Fragment(), OnMapReadyCallback {
 
@@ -50,6 +50,8 @@ class StoryMapsFragment : Fragment(), OnMapReadyCallback {
     private lateinit var selectedMarkerIcon: BitmapDescriptor
     private val commonMarkerAlpha = 0.5f
     private val selectedMarkerAlpha = 1f
+
+    private val refreshModal = RefreshModal()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -98,7 +100,7 @@ class StoryMapsFragment : Fragment(), OnMapReadyCallback {
     private fun setupData() {
         viewModel = ViewModelProvider(
             this,
-            ViewModelWithInjectionFactory(ctx)
+            ViewModelWithInjectionFactory(requireActivity())
         )[StoryMapsViewModel::class.java]
 
         commonMarkerIcon = BitmapDescriptorFactory.defaultMarker(
@@ -115,10 +117,12 @@ class StoryMapsFragment : Fragment(), OnMapReadyCallback {
             resources.getDimension(R.dimen.bottom_nav_height).toInt()
         )
 
-        mMap.uiSettings.isZoomControlsEnabled = true
-        mMap.uiSettings.isIndoorLevelPickerEnabled = true
-        mMap.uiSettings.isCompassEnabled = true
-        mMap.uiSettings.isMapToolbarEnabled = true
+        mMap.uiSettings.apply {
+            isZoomControlsEnabled = true
+            isIndoorLevelPickerEnabled = true
+            isCompassEnabled = true
+            isMapToolbarEnabled = true
+        }
 
         setElementPropertyValue()
     }
@@ -138,25 +142,35 @@ class StoryMapsFragment : Fragment(), OnMapReadyCallback {
 
                 rlTypeHybrid.setOnClickListener {
                     if (viewModel.currentMapMode != DataStorePreferences.MODE_HYBRID) {
-                        choiceMapMode(DataStorePreferences.MODE_HYBRID)
+                        selectMapMode(DataStorePreferences.MODE_HYBRID)
                     }
                 }
 
                 rlTypeSatellite.setOnClickListener {
                     if (viewModel.currentMapMode != DataStorePreferences.MODE_NIGHT) {
-                        choiceMapMode(DataStorePreferences.MODE_NIGHT)
+                        selectMapMode(DataStorePreferences.MODE_NIGHT)
                     }
                 }
 
                 rlTypeNormal.setOnClickListener {
                     if (viewModel.currentMapMode != DataStorePreferences.MODE_NORMAL) {
-                        choiceMapMode(DataStorePreferences.MODE_NORMAL)
+                        selectMapMode(DataStorePreferences.MODE_NORMAL)
                     }
                 }
 
                 cvStoryItem.setOnClickListener {
-                    storyMapsListener.onRequestDetailFromMap(selectedStory)
+                    lifecycleScope.launch {
+                        val latLng = LatLng(selectedStory?.lat ?: 0.0, selectedStory?.lon ?: 0.0)
+                        val address = getAddressName(latLng)
+                        val storyWithAddress = selectedStory.also {
+                            it?.address = address
+                        }
+                        storyMapsListener.onRequestDetailFromMap(storyWithAddress)
+                    }
+                }
 
+                fabRefresh.setOnClickListener {
+                    getFreshMapStory()
                 }
 
                 mMap.setOnMarkerClickListener { selectedMarker ->
@@ -194,16 +208,52 @@ class StoryMapsFragment : Fragment(), OnMapReadyCallback {
 
                 mapModeInSetting.observe(requireActivity()) { mapMode ->
                     if (currentMapMode == null) {
-                        choiceMapMode(mapMode)
+                        selectMapMode(mapMode)
                     } else {
-                        choiceMapMode(
+                        selectMapMode(
                             currentMapMode ?: DataStorePreferences.MODE_HYBRID
                         )
                     }
                 }
 
                 stories.observe(requireActivity()) { stories ->
+                    mMap.clear()
                     attachStoryOnMap(stories)
+                }
+
+                isShowLoading.observe(requireActivity()) { isLoading ->
+                    if (isLoading) {
+                        pbLoading.visibility = View.VISIBLE
+                        fabRefresh.visibility = View.GONE
+                    } else {
+                        pbLoading.visibility = View.GONE
+                        fabRefresh.visibility = View.VISIBLE
+                    }
+                }
+
+                isShowRefreshModal.observe(requireActivity()) { isShowingRefreshModal ->
+                    if (isShowingRefreshModal) {
+                        refreshModal.showRefreshModal(
+                            ctx,
+                            responseType,
+                            if (responseType != ResponseModal.TYPE_ERROR) {
+                                responseMessage
+                            } else {
+                                resources.getString(
+                                    R.string.connection_problem
+                                )
+                            },
+                            onRefreshClicked = {
+                                viewModel.dismissRefreshModal()
+                                viewModel.getStories(mToken)
+                            },
+                            onCloseClicked = {
+                                viewModel.dismissRefreshModal()
+                            }
+                        )
+                    } else {
+                        refreshModal.dismiss()
+                    }
                 }
             }
         }
@@ -220,7 +270,7 @@ class StoryMapsFragment : Fragment(), OnMapReadyCallback {
                     story.id == viewModel.selectedMarkerObjectId
                 ) {
                     mMap.addMarker(
-                        MarkerOptions().position(latLng).title(viewModel.getAddressName(latLng))
+                        MarkerOptions().position(latLng)
                             .snippet(story.id)
                             .icon(selectedMarkerIcon)
                             .alpha(selectedMarkerAlpha)
@@ -230,7 +280,7 @@ class StoryMapsFragment : Fragment(), OnMapReadyCallback {
                     }
                 } else {
                     mMap.addMarker(
-                        MarkerOptions().position(latLng).title(viewModel.getAddressName(latLng))
+                        MarkerOptions().position(latLng)
                             .snippet(story.id)
                             .icon(commonMarkerIcon)
                             .alpha(commonMarkerAlpha)
@@ -255,6 +305,32 @@ class StoryMapsFragment : Fragment(), OnMapReadyCallback {
                     dpToPx(ctx, 8f).toInt()
                 )
             )
+        }
+
+        storyMapsListener.onStoryMapFragReady(this)
+    }
+
+    fun getFreshMapStory(focus: LatLng? = null) {
+        binding?.let {
+            if (focus != null) {
+                setShowPreview(false, null)
+                mMap.animateCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        LatLng(
+                            focus.latitude,
+                            focus.longitude
+                        ),
+                        18f
+                    ),
+                    1500,
+                    null
+                )
+                storyMapsListener.onFocusRequestExecuted()
+            }
+            if (viewModel.mToken.isNotEmpty()) {
+                viewModel.getStories(viewModel.mToken)
+            }
+
         }
     }
 
@@ -294,6 +370,8 @@ class StoryMapsFragment : Fragment(), OnMapReadyCallback {
             binding?.apply {
                 if (story != null) {
                     setPreviewValue(story)
+                    val address = getAddressName(LatLng(story.lat ?: 0.0, story.lon ?: 0.0))
+                    story.address = address
                     selectedStory = story
                 }
 
@@ -314,7 +392,7 @@ class StoryMapsFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun choiceMapMode(type: String) {
+    private fun selectMapMode(type: String) {
         binding?.apply {
             rlTypeHybrid.background =
                 ContextCompat.getDrawable(ctx, R.drawable.bg_maps_type)
@@ -483,9 +561,12 @@ class StoryMapsFragment : Fragment(), OnMapReadyCallback {
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+        refreshModal.dismiss()
     }
 
     interface StoryMapsListener {
+        fun onStoryMapFragReady(fragment: Fragment)
         fun onRequestDetailFromMap(data: Story?)
+        fun onFocusRequestExecuted()
     }
 }

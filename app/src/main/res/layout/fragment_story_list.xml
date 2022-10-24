@@ -51,26 +51,6 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="@string/no_data_available" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cv_splash"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginEnd="32dp"
-            android:layout_marginBottom="32dp"
-            android:scaleX="0"
-            android:scaleY="0"
-            app:cardCornerRadius="1000dp"
-            app:cardElevation="10dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <View
-                android:id="@+id/vw_splash"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/secondary" />
-        </androidx.cardview.widget.CardView>
-
         <ProgressBar
             android:id="@+id/pb_loading"
             android:layout_width="wrap_content"

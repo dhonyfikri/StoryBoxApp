@@ -1,14 +1,18 @@
 package com.fikri.submissionstoryappbpai.activity
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.Settings
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
@@ -19,16 +23,28 @@ import com.fikri.submissionstoryappbpai.fragment.home_ui_item.create_story_optio
 import com.fikri.submissionstoryappbpai.fragment.home_ui_item.more_menu.MoreMenuFragment
 import com.fikri.submissionstoryappbpai.fragment.home_ui_item.story_list.StoryListFragment
 import com.fikri.submissionstoryappbpai.fragment.home_ui_item.story_maps.StoryMapsFragment
-import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
-import com.fikri.submissionstoryappbpai.other_class.dataStore
 import com.fikri.submissionstoryappbpai.view_model.HomeBottomNavViewModel
-import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithDataStorePrefFactory
+import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithInjectionFactory
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeBottomNavigationActivity : AppCompatActivity(), StoryListFragment.StoryListListener,
     StoryMapsFragment.StoryMapsListener,
     MoreMenuFragment.SettingFragListener,
     CreateStoryOptionsFragment.CreateStoryOptionsListener {
+
+    companion object {
+        const val CREATE_STORY_RESULT = 100
+        const val CREATE_STORY_SUCCESS = "is_successfully_create_story"
+        const val CREATE_STORY_MAP_RESULT = 110
+        const val CREATE_STORY_MAP_SUCCESS = "is_successfully_create_story_map"
+        const val CREATE_STORY_MAP_SUCCESS_LAT = "create_story_success_map_lat"
+        const val CREATE_STORY_MAP_SUCCESS_LNG = "create_story_success_map_lng"
+    }
 
     private lateinit var binding: ActivityHomeBottomNavigationBinding
     private lateinit var navView: BottomNavigationView
@@ -45,11 +61,10 @@ class HomeBottomNavigationActivity : AppCompatActivity(), StoryListFragment.Stor
     }
 
     private fun setupData() {
-        val pref = DataStorePreferences.getInstance(dataStore)
         viewModel =
             ViewModelProvider(
                 this,
-                ViewModelWithDataStorePrefFactory(pref)
+                ViewModelWithInjectionFactory(this)
             )[HomeBottomNavViewModel::class.java]
 
         navView = binding.navView
@@ -94,19 +109,53 @@ class HomeBottomNavigationActivity : AppCompatActivity(), StoryListFragment.Stor
     private val launcherIntent = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        if (result.resultCode == HomeActivity.CREATE_STORY_RESULT) {
-            if (result.data?.getBooleanExtra(HomeActivity.CREATE_STORY_SUCCESS, true) as Boolean) {
+        if (result.resultCode == CREATE_STORY_RESULT) {
+            if (result.data?.getBooleanExtra(CREATE_STORY_SUCCESS, true) as Boolean) {
                 viewModel.requestToRefreshAdapterAfterAddNewPost = true
                 navView.selectedItemId = R.id.navigation_story_list
             }
         }
+        if (result.resultCode == CREATE_STORY_MAP_RESULT) {
+            if (result.data?.getBooleanExtra(CREATE_STORY_MAP_SUCCESS, true) as Boolean) {
+                viewModel.requestLat =
+                    result.data?.getDoubleExtra(CREATE_STORY_MAP_SUCCESS_LAT, 0.0) as Double
+                viewModel.requestLng =
+                    result.data?.getDoubleExtra(CREATE_STORY_MAP_SUCCESS_LNG, 0.0) as Double
+                viewModel.requestToRefreshMapAfterAddNewPost = true
+                navView.selectedItemId = R.id.navigation_story_maps
+            }
+        }
     }
 
-    private fun getFragment(): Fragment? {
-        val navHostFragment: Fragment? = supportFragmentManager.primaryNavigationFragment
-        return navHostFragment?.childFragmentManager?.fragments?.get(0)
+    private fun fabSplash() {
+        viewModel.isSplashing = true
+        binding.apply {
+            val primaryColor =
+                ContextCompat.getColor(this@HomeBottomNavigationActivity, R.color.primary)
+            val secondaryColor =
+                ContextCompat.getColor(this@HomeBottomNavigationActivity, R.color.secondary)
+            val splash = AnimatorSet().apply {
+                playTogether(
+                    ObjectAnimator.ofFloat(cvSplash, View.SCALE_X, 200f).setDuration(1500),
+                    ObjectAnimator.ofFloat(cvSplash, View.SCALE_Y, 200f).setDuration(1500),
+                    ObjectAnimator.ofArgb(vwSplash, "backgroundColor", secondaryColor, primaryColor)
+                        .setDuration(1000)
+                )
+            }
+            val disappear = AnimatorSet().apply {
+                playTogether(
+                    ObjectAnimator.ofFloat(cvSplash, View.SCALE_X, 0f).setDuration(0),
+                    ObjectAnimator.ofFloat(cvSplash, View.SCALE_Y, 0f).setDuration(0),
+                    ObjectAnimator.ofArgb(vwSplash, "backgroundColor", primaryColor, secondaryColor)
+                        .setDuration(0)
+                )
+            }
+            AnimatorSet().apply {
+                playSequentially(splash, disappear)
+                start()
+            }
+        }
     }
-
 
     override fun onStoryListFragReady(fragment: Fragment) {
         if (viewModel.requestToRefreshAdapterAfterAddNewPost) {
@@ -114,6 +163,18 @@ class HomeBottomNavigationActivity : AppCompatActivity(), StoryListFragment.Stor
             storyListFragment.getFreshStory()
             viewModel.requestToRefreshAdapterAfterAddNewPost = false
         }
+    }
+
+    override fun onStoryMapFragReady(fragment: Fragment) {
+        if (viewModel.requestToRefreshMapAfterAddNewPost) {
+            val storyMapFragment = fragment as StoryMapsFragment
+            val requestFocus = LatLng(viewModel.requestLat, viewModel.requestLng)
+            storyMapFragment.getFreshMapStory(requestFocus)
+        }
+    }
+
+    override fun onFocusRequestExecuted() {
+        viewModel.requestToRefreshMapAfterAddNewPost = false
     }
 
     override fun onRequestDetailFromMap(data: Story?) {
@@ -127,17 +188,31 @@ class HomeBottomNavigationActivity : AppCompatActivity(), StoryListFragment.Stor
     }
 
     override fun onCreateStoryOptionsClicked(options: String) {
-        when (options) {
-            CreateStoryOptionsFragment.CREATE_BASIC_STORY -> {
-                launcherIntent.launch(
-                    Intent(
-                        this@HomeBottomNavigationActivity,
-                        CreateStoryActivity::class.java
+        if (!viewModel.isSplashing) {
+            when (options) {
+                CreateStoryOptionsFragment.CREATE_BASIC_STORY -> {
+                    fabSplash()
+                    lifecycleScope.launch(Dispatchers.Default) {
+                        delay(800)
+                        withContext(Dispatchers.Main) {
+                            viewModel.isSplashing = false
+                            launcherIntent.launch(
+                                Intent(
+                                    this@HomeBottomNavigationActivity,
+                                    CreateStoryActivity::class.java
+                                )
+                            )
+                        }
+                    }
+                }
+                CreateStoryOptionsFragment.CREATE_GEOLOCATION_STORY -> {
+                    launcherIntent.launch(
+                        Intent(
+                            this@HomeBottomNavigationActivity,
+                            CreateStoryMapActivity::class.java
+                        )
                     )
-                )
-            }
-            CreateStoryOptionsFragment.CREATE_GEOLOCATION_STORY -> {
-
+                }
             }
         }
     }

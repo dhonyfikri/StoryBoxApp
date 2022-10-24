@@ -18,6 +18,10 @@ class StoryMapsViewModel(private val mapsStoryRepository: MapsStoryRepository) :
 
     private val _stories = MutableLiveData<ArrayList<Story>>()
     val stories: LiveData<ArrayList<Story>> = _stories
+    private val _isShowLoading = MutableLiveData(false)
+    val isShowLoading: LiveData<Boolean> = _isShowLoading
+    private val _isShowRefreshModal = MutableLiveData<Boolean>()
+    val isShowRefreshModal: LiveData<Boolean> = _isShowRefreshModal
 
     val mapModeInSetting = mapsStoryRepository.getMapMode()
 
@@ -29,15 +33,14 @@ class StoryMapsViewModel(private val mapsStoryRepository: MapsStoryRepository) :
     var toggleModeTranslationX = 0f
     var previewAlpha = 0f
     var selectedStory: Story? = null
-    var asu: Story? = null
 
     var selectedMarkerObject: Marker? = null
     var selectedMarkerObjectId: String? = null
 
     var mToken = ""
-
     var isShowingMapModeOptions = false
     var isShowingPreview = false
+
     var responseType = RefreshModal.TYPE_GENERAL
     var responseMessage = ""
     var currentMapMode: String? = null
@@ -58,18 +61,26 @@ class StoryMapsViewModel(private val mapsStoryRepository: MapsStoryRepository) :
     }
 
     fun getStories(token: String) {
+        _isShowLoading.value = true
         mapsStoryRepository.getMapsStory(
             token,
             onSuccess = { listStory, message ->
+                _isShowLoading.value = false
                 responseMessage = message
                 _stories.value = listStory
             },
             onFailed = { responseType, message ->
+                _isShowLoading.value = false
                 this.responseType = responseType
                 responseMessage = message
+                _isShowRefreshModal.value = true
             }
         )
     }
 
     fun getAddressName(latLng: LatLng) = mapsStoryRepository.getAddressName(latLng)
+
+    fun dismissRefreshModal() {
+        _isShowRefreshModal.value = false
+    }
 }
