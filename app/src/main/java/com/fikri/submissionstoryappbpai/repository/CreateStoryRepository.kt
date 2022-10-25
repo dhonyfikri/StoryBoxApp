@@ -1,11 +1,14 @@
 package com.fikri.submissionstoryappbpai.repository
 
-import android.content.Context
-import com.fikri.submissionstoryappbpai.api.ApiConfig
+import android.content.res.Resources
+import com.fikri.submissionstoryappbpai.R
 import com.fikri.submissionstoryappbpai.api.ApiService
 import com.fikri.submissionstoryappbpai.application.MyApplication
 import com.fikri.submissionstoryappbpai.data_model.AddStoryResponseModel
-import com.fikri.submissionstoryappbpai.other_class.*
+import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
+import com.fikri.submissionstoryappbpai.other_class.RefreshModal
+import com.fikri.submissionstoryappbpai.other_class.ResponseModal
+import com.fikri.submissionstoryappbpai.other_class.reduceFileImage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -21,11 +24,14 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 
-class CreateStoryRepository(context: Context, private val apiService: ApiService) {
-    val pref = DataStorePreferences.getInstance(context.dataStore)
-
-    fun fetchToken(callback: ((token: String) -> Unit)?) {
-        MyApplication().applicationScope.launch(Dispatchers.Default) {
+class CreateStoryRepository(
+    private val myApplication: MyApplication,
+    private val resources: Resources,
+    private val pref: DataStorePreferences,
+    private val apiService: ApiService
+) {
+    fun getToken(callback: ((token: String) -> Unit)?) {
+        myApplication.applicationScope.launch(Dispatchers.Default) {
             withContext(Dispatchers.Main) {
                 val token = pref.getDataStoreValue(DataStorePreferences.TOKEN_KEY).first()
                 callback?.invoke(token)
@@ -77,7 +83,10 @@ class CreateStoryRepository(context: Context, private val apiService: ApiService
             }
 
             override fun onFailure(call: Call<AddStoryResponseModel>, t: Throwable) {
-                callback?.invoke(RefreshModal.TYPE_ERROR, null)
+                callback?.invoke(
+                    RefreshModal.TYPE_ERROR,
+                    resources.getString(R.string.connection_problem)
+                )
             }
         })
     }

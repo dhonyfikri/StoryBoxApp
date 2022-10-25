@@ -1,5 +1,7 @@
 package com.fikri.submissionstoryappbpai.repository
 
+import android.content.res.Resources
+import com.fikri.submissionstoryappbpai.R
 import com.fikri.submissionstoryappbpai.api.ApiConfig
 import com.fikri.submissionstoryappbpai.data_model.RegisterResponseModel
 import com.fikri.submissionstoryappbpai.other_class.ResponseModal
@@ -8,7 +10,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class RegisterRepository {
+class RegisterRepository(private val resources: Resources) {
     fun register(
         name: String,
         email: String,
@@ -52,7 +54,7 @@ class RegisterRepository {
             override fun onFailure(call: Call<RegisterResponseModel>, t: Throwable) {
                 callback?.invoke(
                     ResponseModal.TYPE_ERROR,
-                    null
+                    resources.getString(R.string.connection_problem)
                 )
             }
         })

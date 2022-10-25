@@ -97,13 +97,7 @@ class LoginActivity : AppCompatActivity() {
                     responseModal.showResponseModal(
                         this@LoginActivity,
                         responseType,
-                        if (responseType != ResponseModal.TYPE_ERROR) {
-                            responseMessage
-                        } else {
-                            resources.getString(
-                                R.string.connection_problem
-                            )
-                        }
+                        responseMessage
                     ) {
                         dismissResponseModal()
                     }

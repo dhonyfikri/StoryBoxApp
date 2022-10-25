@@ -1,15 +1,16 @@
 package com.fikri.submissionstoryappbpai.repository
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
-import com.fikri.submissionstoryappbpai.other_class.*
+import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
+import com.fikri.submissionstoryappbpai.other_class.getDayDiff
+import com.fikri.submissionstoryappbpai.other_class.getStringDate
+import com.fikri.submissionstoryappbpai.other_class.toDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 
-class MainActivityRepository(context: Context) {
-    val pref = DataStorePreferences.getInstance(context.dataStore)
+class MainActivityRepository(private val pref: DataStorePreferences) {
     suspend fun validatingLoginSession(): Boolean {
         return withContext(Dispatchers.Main) {
             val currentDate = getStringDate().toDate()

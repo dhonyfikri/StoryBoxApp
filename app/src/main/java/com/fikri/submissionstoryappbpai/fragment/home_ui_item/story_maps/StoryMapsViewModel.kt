@@ -3,16 +3,12 @@ package com.fikri.submissionstoryappbpai.fragment.home_ui_item.story_maps
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.fikri.submissionstoryappbpai.data_model.CameraMapPosition
 import com.fikri.submissionstoryappbpai.data_model.Story
 import com.fikri.submissionstoryappbpai.other_class.RefreshModal
 import com.fikri.submissionstoryappbpai.repository.MapsStoryRepository
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class StoryMapsViewModel(private val mapsStoryRepository: MapsStoryRepository) : ViewModel() {
 
@@ -47,20 +43,14 @@ class StoryMapsViewModel(private val mapsStoryRepository: MapsStoryRepository) :
     var firstAppeared = true
 
     init {
-        getToken()
+        getStories()
     }
 
-    private fun getToken() {
-        viewModelScope.launch {
-            withContext(Dispatchers.Main) {
-                val tokenResult = mapsStoryRepository.getToken()
-                mToken = tokenResult
-                getStories(tokenResult)
-            }
-        }
+    fun getStories() = mapsStoryRepository.getToken { token ->
+        getStoriesFromServer(token)
     }
 
-    fun getStories(token: String) {
+    private fun getStoriesFromServer(token: String) {
         _isShowLoading.value = true
         mapsStoryRepository.getMapsStory(
             token,

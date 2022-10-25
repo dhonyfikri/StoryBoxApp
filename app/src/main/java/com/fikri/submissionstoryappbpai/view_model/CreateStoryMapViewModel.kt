@@ -4,16 +4,12 @@ import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.fikri.submissionstoryappbpai.activity.CreateStoryMapActivity
 import com.fikri.submissionstoryappbpai.data_model.CameraMapPosition
 import com.fikri.submissionstoryappbpai.other_class.RefreshModal
 import com.fikri.submissionstoryappbpai.other_class.ResponseModal
 import com.fikri.submissionstoryappbpai.repository.CreateStoryMapRepository
 import com.google.android.gms.maps.model.LatLng
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.io.File
 
 class CreateStoryMapViewModel(private val createStoryMapRepository: CreateStoryMapRepository) :
@@ -37,7 +33,6 @@ class CreateStoryMapViewModel(private val createStoryMapRepository: CreateStoryM
     var normalTranslationX = 0f
     var toggleModeTranslationX = 0f
     var photo: File? = null
-    private var mToken = ""
     var selectedPosition: LatLng? = null
 
     var isShowingMapModeOptions = false
@@ -46,38 +41,27 @@ class CreateStoryMapViewModel(private val createStoryMapRepository: CreateStoryM
     var currentMapMode: String? = null
     var firstAppeared = true
 
-    init {
-        getToken()
+    fun uploadStory(desc: String) = createStoryMapRepository.getToken { token ->
+        postDataToServer(token, desc)
     }
 
-    private fun getToken() {
-        viewModelScope.launch {
-            withContext(Dispatchers.Main) {
-                val tokenResult = createStoryMapRepository.getToken()
-                mToken = tokenResult
+    private fun postDataToServer(token: String, desc: String) {
+        _isShowLoading.value = true
+        createStoryMapRepository.postDataToServer(
+            token,
+            desc,
+            selectedPosition as LatLng,
+            photo
+        ) { responseType, responseMessage ->
+            _isShowLoading.value = false
+            this.responseType = responseType
+            this.responseMessage = responseMessage
+            if (responseType == ResponseModal.TYPE_SUCCESS) {
+                _isShowResponseModal.value = true
+            } else {
+                _isShowRefreshModal.value = true
             }
-        }
-    }
 
-    fun uploadStory(desc: String) {
-        if (mToken.isNotEmpty()) {
-            _isShowLoading.value = true
-            createStoryMapRepository.postDataToServer(
-                mToken,
-                desc,
-                selectedPosition as LatLng,
-                photo
-            ) { _responseType, _responseMessage ->
-                _isShowLoading.value = false
-                responseType = _responseType
-                responseMessage = _responseMessage
-                if (_responseType == ResponseModal.TYPE_SUCCESS) {
-                    _isShowResponseModal.value = true
-                } else {
-                    _isShowRefreshModal.value = true
-                }
-
-            }
         }
     }
 

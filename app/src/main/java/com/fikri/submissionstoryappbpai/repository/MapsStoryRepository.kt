@@ -1,36 +1,40 @@
 package com.fikri.submissionstoryappbpai.repository
 
-import android.content.Context
+import android.content.res.Resources
 import android.location.Geocoder
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.asLiveData
 import com.fikri.submissionstoryappbpai.R
 import com.fikri.submissionstoryappbpai.api.ApiService
+import com.fikri.submissionstoryappbpai.application.MyApplication
 import com.fikri.submissionstoryappbpai.data_model.AllStoryResponseModel
 import com.fikri.submissionstoryappbpai.data_model.Story
 import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
 import com.fikri.submissionstoryappbpai.other_class.RefreshModal
-import com.fikri.submissionstoryappbpai.other_class.dataStore
+import com.fikri.submissionstoryappbpai.other_class.reverseGeocoding
 import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.IOException
-import java.util.*
 
 class MapsStoryRepository(
-    private val context: Context,
+    private val myApplication: MyApplication,
+    private val resources: Resources,
+    private val pref: DataStorePreferences,
+    private val geocoder: Geocoder,
     private val apiService: ApiService
 ) {
-    val pref = DataStorePreferences.getInstance(context.dataStore)
-
-    suspend fun getToken(): String {
-        return withContext(Dispatchers.Main) {
-            pref.getDataStoreValue(DataStorePreferences.TOKEN_KEY).first()
+    fun getToken(callback: ((token: String) -> Unit)?) {
+        myApplication.applicationScope.launch(Dispatchers.Default) {
+            withContext(Dispatchers.Main) {
+                val token = pref.getDataStoreValue(DataStorePreferences.TOKEN_KEY).first()
+                callback?.invoke(token)
+            }
         }
     }
 
@@ -76,7 +80,7 @@ class MapsStoryRepository(
             override fun onFailure(call: Call<AllStoryResponseModel>, t: Throwable) {
                 onFailed?.invoke(
                     RefreshModal.TYPE_ERROR,
-                    context.getString(R.string.connection_problem)
+                    resources.getString(R.string.connection_problem)
                 )
             }
         })
@@ -87,16 +91,6 @@ class MapsStoryRepository(
     }
 
     fun getAddressName(latLng: LatLng): String {
-        var addressName = context.getString(R.string.location_unknown)
-        val geocoder = Geocoder(context, Locale.getDefault())
-        try {
-            val list = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
-            if (list != null && list.size != 0) {
-                addressName = list[0].getAddressLine(0)
-            }
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return addressName
+        return reverseGeocoding(geocoder, latLng, resources.getString(R.string.location_unknown))
     }
 }

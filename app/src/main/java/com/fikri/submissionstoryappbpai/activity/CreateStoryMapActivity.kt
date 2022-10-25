@@ -141,10 +141,10 @@ class CreateStoryMapActivity : AppCompatActivity(), OnMapReadyCallback {
                         lifecycleScope.launch {
                             val position = LatLng(it.latitude, it.longitude)
                             val address = getAddressName(position)
-                            withContext(Dispatchers.Main){
-                                selectedPosition = position
+                            selectedPosition = position
+                            validityCheck()
+                            withContext(Dispatchers.Main) {
                                 tvAddressPreview.text = address
-                                validityCheck()
                             }
                         }
                     }
@@ -210,13 +210,7 @@ class CreateStoryMapActivity : AppCompatActivity(), OnMapReadyCallback {
                         refreshModal.showRefreshModal(
                             this@CreateStoryMapActivity,
                             responseType,
-                            if (responseType != ResponseModal.TYPE_ERROR) {
-                                responseMessage
-                            } else {
-                                resources.getString(
-                                    R.string.connection_problem
-                                )
-                            },
+                            responseMessage,
                             onRefreshClicked = {
                                 dismissRefreshModal()
                                 uploadStory(binding.edAddDescription.text.toString())

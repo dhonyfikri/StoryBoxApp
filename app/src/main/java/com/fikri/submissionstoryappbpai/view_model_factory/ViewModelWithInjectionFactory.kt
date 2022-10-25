@@ -24,7 +24,7 @@ class ViewModelWithInjectionFactory(private val context: Context) :
         } else if (modelClass.isAssignableFrom(LoginViewModel::class.java)) {
             return LoginViewModel(Injection.provideLoginRepository(context)) as T
         } else if (modelClass.isAssignableFrom(RegisterViewModel::class.java)) {
-            return RegisterViewModel(Injection.provideRegisterRepository()) as T
+            return RegisterViewModel(Injection.provideRegisterRepository(context)) as T
         } else if (modelClass.isAssignableFrom(HomeBottomNavViewModel::class.java)) {
             return HomeBottomNavViewModel(Injection.provideHomeBottomNavRepository(context)) as T
         } else if (modelClass.isAssignableFrom(DisplayConfigurationViewModel::class.java)) {

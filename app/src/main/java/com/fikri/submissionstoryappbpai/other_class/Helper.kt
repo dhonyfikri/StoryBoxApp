@@ -6,12 +6,14 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
+import android.location.Geocoder
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.util.TypedValue
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
+import androidx.annotation.Nullable
 import androidx.core.content.ContextCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -19,6 +21,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import com.fikri.submissionstoryappbpai.R
+import com.google.android.gms.maps.model.LatLng
 import java.io.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -167,6 +170,19 @@ fun reduceFileImage(file: File, maxSize: Int = 500000): File {
     } while (streamLength > maxSize && compressQuality > 0)
     bitmap.compress(Bitmap.CompressFormat.JPEG, compressQuality, FileOutputStream(file))
     return file
+}
+
+fun reverseGeocoding(geocoder: Geocoder, latLng: LatLng, default: String = ""): String {
+    var addressName = default
+    try {
+        val list = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+        if (list != null && list.size != 0) {
+            addressName = list[0].getAddressLine(0)
+        }
+    } catch (e: IOException) {
+        e.printStackTrace()
+    }
+    return addressName
 }
 
 fun CombinedLoadStates.decideOnState(

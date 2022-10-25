@@ -99,9 +99,7 @@ class RegisterActivity : AppCompatActivity() {
                     responseModal.showResponseModal(
                         this@RegisterActivity,
                         responseType,
-                        if (responseType != ResponseModal.TYPE_ERROR) responseMessage else resources.getString(
-                            R.string.connection_problem
-                        )
+                        responseMessage
                     ) {
                         viewModel.dismissResponseModal()
                         if (responseType == ResponseModal.TYPE_SUCCESS) {

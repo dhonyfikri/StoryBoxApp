@@ -20,14 +20,19 @@ import com.fikri.submissionstoryappbpai.R
 import com.fikri.submissionstoryappbpai.data_model.CameraMapPosition
 import com.fikri.submissionstoryappbpai.data_model.Story
 import com.fikri.submissionstoryappbpai.databinding.FragmentStoryMapsBinding
-import com.fikri.submissionstoryappbpai.other_class.*
+import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
+import com.fikri.submissionstoryappbpai.other_class.RefreshModal
+import com.fikri.submissionstoryappbpai.other_class.dpToPx
+import com.fikri.submissionstoryappbpai.other_class.toDate
 import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithInjectionFactory
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class StoryMapsFragment : Fragment(), OnMapReadyCallback {
 
@@ -50,6 +55,7 @@ class StoryMapsFragment : Fragment(), OnMapReadyCallback {
     private lateinit var selectedMarkerIcon: BitmapDescriptor
     private val commonMarkerAlpha = 0.5f
     private val selectedMarkerAlpha = 1f
+    private var isDetached: Boolean? = null
 
     private val refreshModal = RefreshModal()
 
@@ -159,14 +165,7 @@ class StoryMapsFragment : Fragment(), OnMapReadyCallback {
                 }
 
                 cvStoryItem.setOnClickListener {
-                    lifecycleScope.launch {
-                        val latLng = LatLng(selectedStory?.lat ?: 0.0, selectedStory?.lon ?: 0.0)
-                        val address = getAddressName(latLng)
-                        val storyWithAddress = selectedStory.also {
-                            it?.address = address
-                        }
-                        storyMapsListener.onRequestDetailFromMap(storyWithAddress)
-                    }
+                    storyMapsListener.onRequestDetailFromMap(selectedStory)
                 }
 
                 fabRefresh.setOnClickListener {
@@ -190,9 +189,18 @@ class StoryMapsFragment : Fragment(), OnMapReadyCallback {
                         ),
                         500, null
                     )
-                    storyOnMap.forEach { item ->
-                        if (item.id == selectedMarker.snippet) {
-                            setShowPreview(true, item)
+                    lifecycleScope.launch {
+                        storyOnMap.forEach { item ->
+                            if (item.id == selectedMarker.snippet) {
+                                val latLng = LatLng(item.lat ?: 0.0, item.lon ?: 0.0)
+                                val address = getAddressName(latLng)
+                                val storyWithAddress = item.also {
+                                    it.address = address
+                                }
+                                withContext(Dispatchers.Main) {
+                                    setShowPreview(true, storyWithAddress)
+                                }
+                            }
                         }
                     }
                     return@setOnMarkerClickListener true
@@ -236,16 +244,10 @@ class StoryMapsFragment : Fragment(), OnMapReadyCallback {
                         refreshModal.showRefreshModal(
                             ctx,
                             responseType,
-                            if (responseType != ResponseModal.TYPE_ERROR) {
-                                responseMessage
-                            } else {
-                                resources.getString(
-                                    R.string.connection_problem
-                                )
-                            },
+                            responseMessage,
                             onRefreshClicked = {
                                 viewModel.dismissRefreshModal()
-                                viewModel.getStories(mToken)
+                                viewModel.getStories()
                             },
                             onCloseClicked = {
                                 viewModel.dismissRefreshModal()
@@ -292,7 +294,7 @@ class StoryMapsFragment : Fragment(), OnMapReadyCallback {
             }
         }
 
-        if (viewModel.firstAppeared) {
+        if (viewModel.firstAppeared && isDetached == null) {
             viewModel.firstAppeared = false
             val bounds: LatLngBounds = boundsBuilder.build()
             mMap.animateCamera(
@@ -327,10 +329,7 @@ class StoryMapsFragment : Fragment(), OnMapReadyCallback {
                 )
                 storyMapsListener.onFocusRequestExecuted()
             }
-            if (viewModel.mToken.isNotEmpty()) {
-                viewModel.getStories(viewModel.mToken)
-            }
-
+            viewModel.getStories()
         }
     }
 
@@ -556,6 +555,11 @@ class StoryMapsFragment : Fragment(), OnMapReadyCallback {
         super.onAttach(context)
         ctx = context
         storyMapsListener = ctx as StoryMapsListener
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        isDetached = true
     }
 
     override fun onDestroyView() {

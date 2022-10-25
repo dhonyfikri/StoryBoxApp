@@ -27,7 +27,7 @@ class CreateStoryViewModel(private val createStoryRepository: CreateStoryReposit
     var responseType = ResponseModal.TYPE_GENERAL
     var responseMessage: String? = null
 
-    fun uploadStory(desc: String) = createStoryRepository.fetchToken { token ->
+    fun uploadStory(desc: String) = createStoryRepository.getToken { token ->
         postDataToServer(token, desc)
     }
 
@@ -37,11 +37,11 @@ class CreateStoryViewModel(private val createStoryRepository: CreateStoryReposit
             token,
             desc,
             photo
-        ) { _responseType, _responseMessage ->
+        ) { responseType, responseMessage ->
             _isShowLoadingModal.value = false
-            responseType = _responseType
-            responseMessage = _responseMessage
-            if (_responseType == ResponseModal.TYPE_SUCCESS) {
+            this.responseType = responseType
+            this.responseMessage = responseMessage
+            if (responseType == ResponseModal.TYPE_SUCCESS) {
                 _isShowResponseModal.value = true
             } else {
                 _isShowRefreshModal.value = true

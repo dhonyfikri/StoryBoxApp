@@ -1,12 +1,12 @@
 package com.fikri.submissionstoryappbpai.repository
 
-import android.content.Context
+import android.content.res.Resources
+import com.fikri.submissionstoryappbpai.R
 import com.fikri.submissionstoryappbpai.api.ApiConfig
 import com.fikri.submissionstoryappbpai.data_model.LoginResponseModel
 import com.fikri.submissionstoryappbpai.data_model.LoginResult
 import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
 import com.fikri.submissionstoryappbpai.other_class.ResponseModal
-import com.fikri.submissionstoryappbpai.other_class.dataStore
 import com.fikri.submissionstoryappbpai.other_class.getStringDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -15,8 +15,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class LoginRepository(context: Context) {
-    val pref = DataStorePreferences.getInstance(context.dataStore)
+class LoginRepository(private val resources: Resources, private val pref: DataStorePreferences) {
     fun login(
         email: String,
         password: String,
@@ -66,7 +65,7 @@ class LoginRepository(context: Context) {
             override fun onFailure(call: Call<LoginResponseModel>, t: Throwable) {
                 callback?.invoke(
                     ResponseModal.TYPE_ERROR,
-                    null,
+                    resources.getString(R.string.connection_problem),
                     null
                 )
             }

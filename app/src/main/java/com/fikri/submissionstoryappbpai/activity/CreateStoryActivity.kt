@@ -118,13 +118,7 @@ class CreateStoryActivity : AppCompatActivity() {
                     refreshModal.showRefreshModal(
                         this@CreateStoryActivity,
                         responseType,
-                        if (responseType == RefreshModal.TYPE_ERROR) {
-                            resources.getString(
-                                R.string.connection_problem
-                            )
-                        } else {
-                            responseMessage
-                        },
+                        responseMessage,
                         onRefreshClicked = {
                             viewModel.dismissRefreshModal()
                             viewModel.uploadStory(binding.edAddDescription.text.toString())
