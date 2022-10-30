@@ -22,7 +22,7 @@ import com.fikri.submissionstoryappbpai.R
 import com.fikri.submissionstoryappbpai.databinding.ActivityCreateStoryBinding
 import com.fikri.submissionstoryappbpai.other_class.*
 import com.fikri.submissionstoryappbpai.view_model.CreateStoryViewModel
-import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithInjectionFactory
+import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelFactory
 import java.io.File
 import java.io.FileOutputStream
 
@@ -55,7 +55,7 @@ class CreateStoryActivity : AppCompatActivity() {
         viewModel =
             ViewModelProvider(
                 this,
-                ViewModelWithInjectionFactory(this)
+                ViewModelFactory(this)
             )[CreateStoryViewModel::class.java]
 
         if (!allPermissionsGranted()) {

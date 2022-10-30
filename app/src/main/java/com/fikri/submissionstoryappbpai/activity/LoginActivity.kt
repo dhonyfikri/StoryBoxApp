@@ -14,7 +14,7 @@ import com.fikri.submissionstoryappbpai.databinding.ActivityLoginBinding
 import com.fikri.submissionstoryappbpai.other_class.LoadingModal
 import com.fikri.submissionstoryappbpai.other_class.ResponseModal
 import com.fikri.submissionstoryappbpai.view_model.LoginViewModel
-import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithInjectionFactory
+import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelFactory
 
 class LoginActivity : AppCompatActivity() {
 
@@ -44,7 +44,7 @@ class LoginActivity : AppCompatActivity() {
         viewModel =
             ViewModelProvider(
                 this,
-                ViewModelWithInjectionFactory(this)
+                ViewModelFactory(this)
             )[LoginViewModel::class.java]
     }
 

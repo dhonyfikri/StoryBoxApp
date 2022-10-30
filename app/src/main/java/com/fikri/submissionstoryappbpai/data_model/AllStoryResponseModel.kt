@@ -12,7 +12,7 @@ data class AllStoryResponseModel(
     val message: String,
 
     @field:SerializedName("listStory")
-    val listStory: ArrayList<Story>
+    val listStory: MutableList<Story>
 )
 
 @Parcelize
@@ -41,4 +41,4 @@ data class Story(
     @field:SerializedName("address")
     var address: String? = null,
 
-) : Parcelable
+    ) : Parcelable

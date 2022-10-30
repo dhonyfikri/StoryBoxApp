@@ -9,7 +9,7 @@ import androidx.room.Query
 import com.fikri.submissionstoryappbpai.data_model.Story
 
 @Dao
-interface Dao {
+interface StoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertBasicStory(basicStory: List<BasicStory>)
 

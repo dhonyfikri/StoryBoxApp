@@ -1,4 +1,4 @@
-package com.fikri.submissionstoryappbpai.other_class
+package com.fikri.submissionstoryappbpai.data
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -8,7 +8,8 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class DataStorePreferences private constructor(private val dataStore: DataStore<Preferences>) {
+class DataStorePreferences private constructor(private val dataStore: DataStore<Preferences>) :
+    DataStorePreferencesInterface {
     companion object {
         val SESSION_KEY = stringPreferencesKey("login_session")
         val LAST_LOGIN_KEY = stringPreferencesKey("last_login_session")
@@ -35,8 +36,7 @@ class DataStorePreferences private constructor(private val dataStore: DataStore<
         }
     }
 
-    @JvmName("getDataStoreValueString")
-    fun getDataStoreValue(keyParamsString: Preferences.Key<String>): Flow<String> {
+    override fun getDataStoreStringValue(keyParamsString: Preferences.Key<String>): Flow<String> {
         return dataStore.data.map { preferences ->
             preferences[keyParamsString]
                 ?: when (keyParamsString) {
@@ -53,26 +53,31 @@ class DataStorePreferences private constructor(private val dataStore: DataStore<
         }
     }
 
-    @JvmName("getDataStoreValueBoolean")
-    fun getDataStoreValue(keyParamsBoolean: Preferences.Key<Boolean>): Flow<Boolean> {
+    override fun getDataStoreBooleanValue(keyParamsBoolean: Preferences.Key<Boolean>): Flow<Boolean> {
         return dataStore.data.map { preferences ->
             preferences[keyParamsBoolean] ?: false
         }
     }
 
-    suspend fun saveDataStoreValue(keyParamsString: Preferences.Key<String>, value: String?) {
+    override suspend fun saveDataStoreValue(
+        keyParamsString: Preferences.Key<String>,
+        value: String?
+    ) {
         dataStore.edit { preferences ->
             preferences[keyParamsString] = value ?: ""
         }
     }
 
-    suspend fun saveDataStoreValue(keyParamsBoolean: Preferences.Key<Boolean>, value: Boolean?) {
+    override suspend fun saveDataStoreValue(
+        keyParamsBoolean: Preferences.Key<Boolean>,
+        value: Boolean?
+    ) {
         dataStore.edit { preferences ->
             preferences[keyParamsBoolean] = value ?: false
         }
     }
 
-    suspend fun clearDataStore() {
+    override suspend fun clearDataStore() {
         dataStore.edit { preferences ->
             preferences.remove(SESSION_KEY)
             preferences.remove(TOKEN_KEY)
@@ -81,4 +86,49 @@ class DataStorePreferences private constructor(private val dataStore: DataStore<
             preferences.remove(LAST_LOGIN_KEY)
         }
     }
+
+//    fun getDataStoreStringValue(keyParamsString: Preferences.Key<String>): Flow<String> {
+//        return dataStore.data.map { preferences ->
+//            preferences[keyParamsString]
+//                ?: when (keyParamsString) {
+//                    SESSION_KEY, LAST_LOGIN_KEY -> {
+//                        "0001-01-01 00:00:00.00"
+//                    }
+//                    MAP_MODE_KEY -> {
+//                        MODE_HYBRID
+//                    }
+//                    else -> {
+//                        ""
+//                    }
+//                }
+//        }
+//    }
+//
+//    fun getDataStoreBooleanValue(keyParamsBoolean: Preferences.Key<Boolean>): Flow<Boolean> {
+//        return dataStore.data.map { preferences ->
+//            preferences[keyParamsBoolean] ?: false
+//        }
+//    }
+//
+//    suspend fun saveDataStoreValue(keyParamsString: Preferences.Key<String>, value: String?) {
+//        dataStore.edit { preferences ->
+//            preferences[keyParamsString] = value ?: ""
+//        }
+//    }
+//
+//    suspend fun saveDataStoreValue(keyParamsBoolean: Preferences.Key<Boolean>, value: Boolean?) {
+//        dataStore.edit { preferences ->
+//            preferences[keyParamsBoolean] = value ?: false
+//        }
+//    }
+//
+//    suspend fun clearDataStore() {
+//        dataStore.edit { preferences ->
+//            preferences.remove(SESSION_KEY)
+//            preferences.remove(TOKEN_KEY)
+//            preferences.remove(USER_ID_KEY)
+//            preferences.remove(NAME_KEY)
+//            preferences.remove(LAST_LOGIN_KEY)
+//        }
+//    }
 }

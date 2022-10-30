@@ -40,7 +40,10 @@ class StoryDetailActivity : AppCompatActivity() {
 
     private fun setupData() {
         viewModel =
-            ViewModelProvider(this, ViewModelFactory())[StoryDetailViewModel::class.java]
+            ViewModelProvider(
+                this,
+                ViewModelFactory(this)
+            )[StoryDetailViewModel::class.java]
 
         binding.svMainScrollView.scrollY = viewModel.currentScreenScrollOffsetY
 

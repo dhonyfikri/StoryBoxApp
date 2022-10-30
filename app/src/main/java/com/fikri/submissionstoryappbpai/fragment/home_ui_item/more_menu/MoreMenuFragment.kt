@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.fikri.submissionstoryappbpai.R
 import com.fikri.submissionstoryappbpai.databinding.FragmentMoreMenuBinding
 import com.fikri.submissionstoryappbpai.other_class.withDateFormat
-import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithInjectionFactory
+import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelFactory
 import java.text.DateFormat
 
 class MoreMenuFragment : Fragment() {
@@ -40,7 +40,7 @@ class MoreMenuFragment : Fragment() {
 
         viewModel = ViewModelProvider(
             this,
-            ViewModelWithInjectionFactory(requireActivity())
+            ViewModelFactory(requireActivity())
         )[MoreMenuViewModel::class.java]
 
         binding?.llDisplayConfiguration?.setOnClickListener {

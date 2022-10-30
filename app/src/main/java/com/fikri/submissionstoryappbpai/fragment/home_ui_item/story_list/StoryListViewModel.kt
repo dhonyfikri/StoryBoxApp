@@ -8,9 +8,7 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.fikri.submissionstoryappbpai.data_model.Story
 import com.fikri.submissionstoryappbpai.repository.StoryRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class StoryListViewModel(private val storyRepository: StoryRepository) : ViewModel() {
 
@@ -34,22 +32,15 @@ class StoryListViewModel(private val storyRepository: StoryRepository) : ViewMod
     var currentPagingSuccessCode: LiveData<String> = storyRepository.getCurrentPagingSuccessCode()
 
     init {
-        getToken()
-    }
-
-    private fun getToken() {
-        viewModelScope.launch(Dispatchers.Default) {
-            withContext(Dispatchers.Main) {
-                val tokenResult =
-                    storyRepository.getToken()
-                prepareStoryPaging(tokenResult)
-                _token.value = tokenResult
-            }
+        viewModelScope.launch {
+            prepareStoryPaging()
         }
     }
 
-    private fun prepareStoryPaging(token: String) {
-        stories = storyRepository.getBasicStory(token).cachedIn(viewModelScope)
+    private suspend fun prepareStoryPaging() {
+        val tokenResult = storyRepository.getToken()
+        stories = storyRepository.getBasicStory(tokenResult).cachedIn(viewModelScope)
+        _token.value = tokenResult
     }
 
     fun getStoryCount() = storyRepository.getStoryCount()

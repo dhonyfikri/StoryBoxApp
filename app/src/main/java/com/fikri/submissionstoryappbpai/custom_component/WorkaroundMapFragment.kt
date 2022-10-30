@@ -19,7 +19,7 @@ class WorkaroundMapFragment : SupportMapFragment() {
         savedInstanceState: Bundle?
     ): View {
         val layout: View = super.onCreateView(inflater, container, savedInstanceState)
-        val frameLayout: TouchableWrapper = TouchableWrapper(activity as Context)
+        val frameLayout = TouchableWrapper(activity as Context)
         @Suppress("DEPRECATION")
         frameLayout.setBackgroundColor(resources.getColor(android.R.color.transparent))
         (layout as ViewGroup).addView(

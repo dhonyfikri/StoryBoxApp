@@ -4,8 +4,11 @@ import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.fikri.submissionstoryappbpai.data_model.ResultWrapper
 import com.fikri.submissionstoryappbpai.other_class.ResponseModal
 import com.fikri.submissionstoryappbpai.repository.CreateStoryRepository
+import kotlinx.coroutines.launch
 import java.io.File
 
 class CreateStoryViewModel(private val createStoryRepository: CreateStoryRepository) :
@@ -27,24 +30,27 @@ class CreateStoryViewModel(private val createStoryRepository: CreateStoryReposit
     var responseType = ResponseModal.TYPE_GENERAL
     var responseMessage: String? = null
 
-    fun uploadStory(desc: String) = createStoryRepository.getToken { token ->
-        postDataToServer(token, desc)
-    }
-
-    private fun postDataToServer(token: String, desc: String) {
-        _isShowLoadingModal.value = true
-        createStoryRepository.postDataToServer(
-            token,
-            desc,
-            photo
-        ) { responseType, responseMessage ->
+    fun uploadStory(desc: String) {
+        viewModelScope.launch {
+            _isShowLoadingModal.value = true
+            val result = createStoryRepository.postDataToServer(desc, photo)
             _isShowLoadingModal.value = false
-            this.responseType = responseType
-            this.responseMessage = responseMessage
-            if (responseType == ResponseModal.TYPE_SUCCESS) {
-                _isShowResponseModal.value = true
-            } else {
-                _isShowRefreshModal.value = true
+            when (result) {
+                is ResultWrapper.Success -> {
+                    responseType = ResponseModal.TYPE_SUCCESS
+                    responseMessage = result.message
+                    _isShowResponseModal.value = true
+                }
+                is ResultWrapper.Error -> {
+                    responseType = result.failedType.toString()
+                    responseMessage = result.message
+                    _isShowRefreshModal.value = true
+                }
+                is ResultWrapper.NetworkError -> {
+                    responseType = result.failedType.toString()
+                    responseMessage = result.message
+                    _isShowRefreshModal.value = true
+                }
             }
         }
     }

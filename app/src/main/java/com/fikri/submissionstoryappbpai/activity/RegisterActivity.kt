@@ -13,7 +13,7 @@ import com.fikri.submissionstoryappbpai.databinding.ActivityRegisterBinding
 import com.fikri.submissionstoryappbpai.other_class.LoadingModal
 import com.fikri.submissionstoryappbpai.other_class.ResponseModal
 import com.fikri.submissionstoryappbpai.view_model.RegisterViewModel
-import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithInjectionFactory
+import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelFactory
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
@@ -36,7 +36,7 @@ class RegisterActivity : AppCompatActivity() {
         viewModel =
             ViewModelProvider(
                 this,
-                ViewModelWithInjectionFactory(this)
+                ViewModelFactory(this)
             )[RegisterViewModel::class.java]
     }
 

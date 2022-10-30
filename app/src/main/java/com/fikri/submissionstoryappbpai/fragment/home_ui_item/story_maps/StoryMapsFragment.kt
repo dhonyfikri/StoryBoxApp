@@ -17,14 +17,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.fikri.submissionstoryappbpai.R
+import com.fikri.submissionstoryappbpai.data.DataStorePreferences
 import com.fikri.submissionstoryappbpai.data_model.CameraMapPosition
 import com.fikri.submissionstoryappbpai.data_model.Story
 import com.fikri.submissionstoryappbpai.databinding.FragmentStoryMapsBinding
-import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
 import com.fikri.submissionstoryappbpai.other_class.RefreshModal
 import com.fikri.submissionstoryappbpai.other_class.dpToPx
 import com.fikri.submissionstoryappbpai.other_class.toDate
-import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithInjectionFactory
+import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelFactory
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -106,7 +106,7 @@ class StoryMapsFragment : Fragment(), OnMapReadyCallback {
     private fun setupData() {
         viewModel = ViewModelProvider(
             this,
-            ViewModelWithInjectionFactory(requireActivity())
+            ViewModelFactory(requireActivity())
         )[StoryMapsViewModel::class.java]
 
         commonMarkerIcon = BitmapDescriptorFactory.defaultMarker(
@@ -165,7 +165,7 @@ class StoryMapsFragment : Fragment(), OnMapReadyCallback {
                 }
 
                 cvStoryItem.setOnClickListener {
-                    storyMapsListener.onRequestDetailFromMap(selectedStory)
+                    storyMapsListener.onRequestDetailFromMap(selectedStory, ivItemPhoto)
                 }
 
                 fabRefresh.setOnClickListener {
@@ -261,7 +261,7 @@ class StoryMapsFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    private fun attachStoryOnMap(stories: ArrayList<Story>) {
+    private fun attachStoryOnMap(stories: MutableList<Story>) {
         viewModel.storyOnMap = ArrayList()
         stories.forEach { story ->
             if (story.lat != null && story.lon != null) {
@@ -570,7 +570,7 @@ class StoryMapsFragment : Fragment(), OnMapReadyCallback {
 
     interface StoryMapsListener {
         fun onStoryMapFragReady(fragment: Fragment)
-        fun onRequestDetailFromMap(data: Story?)
+        fun onRequestDetailFromMap(data: Story?, view: View)
         fun onFocusRequestExecuted()
     }
 }

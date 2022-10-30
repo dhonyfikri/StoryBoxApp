@@ -10,9 +10,9 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.fikri.submissionstoryappbpai.R
 import com.fikri.submissionstoryappbpai.databinding.ActivityDisplayConfigurationBinding
-import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
+import com.fikri.submissionstoryappbpai.data.DataStorePreferences
 import com.fikri.submissionstoryappbpai.view_model.DisplayConfigurationViewModel
-import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithInjectionFactory
+import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelFactory
 
 class DisplayConfigurationActivity : AppCompatActivity() {
 
@@ -32,7 +32,7 @@ class DisplayConfigurationActivity : AppCompatActivity() {
     private fun setupData() {
         viewModel = ViewModelProvider(
             this,
-            ViewModelWithInjectionFactory(this)
+            ViewModelFactory(this)
         )[DisplayConfigurationViewModel::class.java]
     }
 

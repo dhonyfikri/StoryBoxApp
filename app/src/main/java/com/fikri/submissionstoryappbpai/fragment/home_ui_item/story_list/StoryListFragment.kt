@@ -23,7 +23,7 @@ import com.fikri.submissionstoryappbpai.adapter.LoadingStateAdapter
 import com.fikri.submissionstoryappbpai.data_model.Story
 import com.fikri.submissionstoryappbpai.databinding.FragmentStoryListBinding
 import com.fikri.submissionstoryappbpai.other_class.decideOnState
-import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithInjectionFactory
+import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelFactory
 
 class StoryListFragment : Fragment() {
 
@@ -60,7 +60,7 @@ class StoryListFragment : Fragment() {
     private fun setupData() {
         viewModel = ViewModelProvider(
             this,
-            ViewModelWithInjectionFactory(requireActivity())
+            ViewModelFactory(requireActivity())
         )[StoryListViewModel::class.java]
 
         binding?.srlSwipeRefeshStoryList?.setColorSchemeColors(

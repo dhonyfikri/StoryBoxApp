@@ -38,7 +38,10 @@ class CameraShotActivity : AppCompatActivity() {
 
     private fun setupData() {
         viewModel =
-            ViewModelProvider(this, ViewModelFactory())[CameraShotViewModel::class.java]
+            ViewModelProvider(
+                this,
+                ViewModelFactory(this)
+            )[CameraShotViewModel::class.java]
     }
 
     private fun setupAction() {

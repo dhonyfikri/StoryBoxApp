@@ -9,7 +9,9 @@ import android.provider.Settings
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
+import androidx.core.util.Pair
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -24,7 +26,7 @@ import com.fikri.submissionstoryappbpai.fragment.home_ui_item.more_menu.MoreMenu
 import com.fikri.submissionstoryappbpai.fragment.home_ui_item.story_list.StoryListFragment
 import com.fikri.submissionstoryappbpai.fragment.home_ui_item.story_maps.StoryMapsFragment
 import com.fikri.submissionstoryappbpai.view_model.HomeBottomNavViewModel
-import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithInjectionFactory
+import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.coroutines.Dispatchers
@@ -64,7 +66,7 @@ class HomeBottomNavigationActivity : AppCompatActivity(), StoryListFragment.Stor
         viewModel =
             ViewModelProvider(
                 this,
-                ViewModelWithInjectionFactory(this)
+                ViewModelFactory(this)
             )[HomeBottomNavViewModel::class.java]
 
         navView = binding.navView
@@ -177,13 +179,17 @@ class HomeBottomNavigationActivity : AppCompatActivity(), StoryListFragment.Stor
         viewModel.requestToRefreshMapAfterAddNewPost = false
     }
 
-    override fun onRequestDetailFromMap(data: Story?) {
+    override fun onRequestDetailFromMap(data: Story?, view: View) {
         if (data != null) {
             val moveToStoryDetail = Intent(
                 this@HomeBottomNavigationActivity, StoryDetailActivity::class.java
             )
             moveToStoryDetail.putExtra(StoryDetailActivity.EXTRA_STORY, data)
-            startActivity(moveToStoryDetail)
+            startActivity(
+                moveToStoryDetail, ActivityOptionsCompat.makeSceneTransitionAnimation(
+                    this, Pair(view, "image_detail")
+                ).toBundle()
+            )
         }
     }
 

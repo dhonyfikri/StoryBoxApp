@@ -5,23 +5,20 @@ import androidx.lifecycle.asLiveData
 import androidx.paging.*
 import com.fikri.submissionstoryappbpai.api.ApiService
 import com.fikri.submissionstoryappbpai.data.BasicStoryRemoteMediator
+import com.fikri.submissionstoryappbpai.data.DataStorePreferences
+import com.fikri.submissionstoryappbpai.data.DataStorePreferencesInterface
 import com.fikri.submissionstoryappbpai.data_model.Story
 import com.fikri.submissionstoryappbpai.database.AppDatabase
 import com.fikri.submissionstoryappbpai.fragment.home_ui_item.story_list.StoryListFragment
-import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.withContext
 
 class StoryRepository(
-    private val pref: DataStorePreferences,
+    private val pref: DataStorePreferencesInterface,
     private val appDatabase: AppDatabase,
     private val apiService: ApiService
 ) {
     suspend fun getToken(): String {
-        return withContext(Dispatchers.Main) {
-            pref.getDataStoreValue(DataStorePreferences.TOKEN_KEY).first()
-        }
+        return pref.getDataStoreStringValue(DataStorePreferences.TOKEN_KEY).first()
     }
 
     fun getBasicStory(token: String): LiveData<PagingData<Story>> {
@@ -42,6 +39,7 @@ class StoryRepository(
     fun getStoryCount() = appDatabase.storyDao().getBasicStoryCount()
 
     fun getCurrentPagingSuccessCode(): LiveData<String> {
-        return pref.getDataStoreValue(DataStorePreferences.PAGING_SUCCESS_CODE_KEY).asLiveData()
+        return pref.getDataStoreStringValue(DataStorePreferences.PAGING_SUCCESS_CODE_KEY)
+            .asLiveData()
     }
 }

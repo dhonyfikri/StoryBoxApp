@@ -5,11 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.fikri.submissionstoryappbpai.data_model.LoginResponseModel
+import com.fikri.submissionstoryappbpai.data_model.ResultWrapper
 import com.fikri.submissionstoryappbpai.other_class.ResponseModal
 import com.fikri.submissionstoryappbpai.repository.LoginRepository
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class LoginViewModel(private val loginRepository: LoginRepository) :
     ViewModel() {
@@ -24,32 +23,36 @@ class LoginViewModel(private val loginRepository: LoginRepository) :
     var firstAppeared = true
     var responseType = ResponseModal.TYPE_GENERAL
     var responseMessage: String? = null
-    private var loginResponse: LoginResponseModel? = null
+    var loginResponse: LoginResponseModel? = null
 
     fun login(email: String, password: String) {
-        _isShowLoading.value = true
-        loginRepository.login(
-            email,
-            password
-        ) { responseType, responseMessage, loginResponse ->
+        viewModelScope.launch {
+            _isShowLoading.value = true
+            val result = loginRepository.login(email, password)
             _isShowLoading.value = false
-            if (responseType == ResponseModal.TYPE_SUCCESS && loginResponse != null) {
-                this.loginResponse = loginResponse
-                saveLoginData()
-            } else {
-                this.responseType = responseType
-                this.responseMessage = responseMessage
-                _isShowResponseModal.value = true
+            when (result) {
+                is ResultWrapper.Success -> {
+                    loginResponse = result.response
+                    saveLoginData()
+                }
+                is ResultWrapper.Error -> {
+                    responseType = result.failedType.toString()
+                    responseMessage = result.message
+                    _isShowResponseModal.value = true
+                }
+                is ResultWrapper.NetworkError -> {
+                    responseType = result.failedType.toString()
+                    responseMessage = result.message
+                    _isShowResponseModal.value = true
+                }
             }
         }
     }
 
     private fun saveLoginData() {
         viewModelScope.launch {
-            withContext(Dispatchers.Main) {
-                loginRepository.saveLoginData(loginResponse?.loginResult)
-                _isTimeToHome.value = true
-            }
+            loginRepository.saveLoginData(loginResponse?.loginResult)
+            _isTimeToHome.value = true
         }
     }
 

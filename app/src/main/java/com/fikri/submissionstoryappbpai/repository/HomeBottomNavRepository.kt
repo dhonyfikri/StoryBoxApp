@@ -1,24 +1,21 @@
 package com.fikri.submissionstoryappbpai.repository
 
-import com.fikri.submissionstoryappbpai.application.MyApplication
-import com.fikri.submissionstoryappbpai.database.AppDatabase
-import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
+import com.fikri.submissionstoryappbpai.data.DataStorePreferencesInterface
+import com.fikri.submissionstoryappbpai.database.StoryDao
+import com.fikri.submissionstoryappbpai.database.RemoteKeysDao
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class HomeBottomNavRepository(
-    private val application: MyApplication,
-    private val pref: DataStorePreferences,
-    private val database: AppDatabase
+    private val pref: DataStorePreferencesInterface,
+    private val remoteKeysDao: RemoteKeysDao,
+    private val storyDao: StoryDao
 ) {
-    fun clearDataStore() {
-        application.applicationScope.launch(Dispatchers.Default) {
-            withContext(Dispatchers.Main) {
-                pref.clearDataStore()
-                database.remoteKeysDao().deleteRemoteKeys()
-                database.storyDao().deleteAllBasicStory()
-            }
+    suspend fun clearDataBeforeLogout() {
+        withContext(Dispatchers.Main) {
+            pref.clearDataStore()
+            remoteKeysDao.deleteRemoteKeys()
+            storyDao.deleteAllBasicStory()
         }
     }
 }

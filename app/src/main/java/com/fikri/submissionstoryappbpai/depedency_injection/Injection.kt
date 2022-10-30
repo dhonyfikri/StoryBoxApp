@@ -1,47 +1,43 @@
-package com.fikri.submissionstoryappbpai.di
+package com.fikri.submissionstoryappbpai.depedency_injection
 
 import android.content.Context
 import android.location.Geocoder
 import com.fikri.submissionstoryappbpai.api.ApiConfig
-import com.fikri.submissionstoryappbpai.application.MyApplication
+import com.fikri.submissionstoryappbpai.data.DataStorePreferences
 import com.fikri.submissionstoryappbpai.database.AppDatabase
-import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
 import com.fikri.submissionstoryappbpai.other_class.dataStore
 import com.fikri.submissionstoryappbpai.repository.*
 import java.util.*
 
 object Injection {
-    fun provideRepository(context: Context): StoryRepository {
+    fun provideStoryListRepository(context: Context): StoryRepository {
         val pref = DataStorePreferences.getInstance(context.dataStore)
         val database = AppDatabase.getDatabase(context)
         val apiService = ApiConfig.getApiService()
         return StoryRepository(pref, database, apiService)
     }
 
-    fun provideMapsRepository(context: Context): MapsStoryRepository {
-        val application = MyApplication()
+    fun provideStoryMapsRepository(context: Context): MapsStoryRepository {
         val resources = context.resources
         val pref = DataStorePreferences.getInstance(context.dataStore)
         val geocoder = Geocoder(context, Locale.getDefault())
         val apiService = ApiConfig.getApiService()
-        return MapsStoryRepository(application, resources, pref, geocoder, apiService)
+        return MapsStoryRepository(resources, pref, geocoder, apiService)
     }
 
     fun provideCreateStoryRepository(context: Context): CreateStoryRepository {
-        val application = MyApplication()
         val resources = context.resources
         val pref = DataStorePreferences.getInstance(context.dataStore)
         val apiService = ApiConfig.getApiService()
-        return CreateStoryRepository(application, resources, pref, apiService)
+        return CreateStoryRepository(resources, pref, apiService)
     }
 
     fun provideCreateMapStoryRepository(context: Context): CreateStoryMapRepository {
-        val application = MyApplication()
         val resources = context.resources
         val pref = DataStorePreferences.getInstance(context.dataStore)
         val geocoder = Geocoder(context, Locale.getDefault())
         val apiService = ApiConfig.getApiService()
-        return CreateStoryMapRepository(application, resources, pref, geocoder, apiService)
+        return CreateStoryMapRepository(resources, pref, geocoder, apiService)
     }
 
     fun provideMainActivityRepository(context: Context): MainActivityRepository {
@@ -52,25 +48,27 @@ object Injection {
     fun provideLoginRepository(context: Context): LoginRepository {
         val resources = context.resources
         val pref = DataStorePreferences.getInstance(context.dataStore)
-        return LoginRepository(resources, pref)
+        val apiService = ApiConfig.getApiService()
+        return LoginRepository(resources, pref, apiService)
     }
 
     fun provideRegisterRepository(context: Context): RegisterRepository {
         val resources = context.resources
-        return RegisterRepository(resources)
+        val apiService = ApiConfig.getApiService()
+        return RegisterRepository(resources, apiService)
     }
 
     fun provideHomeBottomNavRepository(context: Context): HomeBottomNavRepository {
-        val application = MyApplication()
         val pref = DataStorePreferences.getInstance(context.dataStore)
         val database = AppDatabase.getDatabase(context)
-        return HomeBottomNavRepository(application, pref, database)
+        val remoteKeysDao = database.remoteKeysDao()
+        val storyDao = database.storyDao()
+        return HomeBottomNavRepository(pref, remoteKeysDao, storyDao)
     }
 
     fun provideDisplayConfigurationRepository(context: Context): DisplayConfigurationRepository {
-        val application = MyApplication()
         val pref = DataStorePreferences.getInstance(context.dataStore)
-        return DisplayConfigurationRepository(application, pref)
+        return DisplayConfigurationRepository(pref)
     }
 
     fun provideMoreMenuRepository(context: Context): MoreMenuRepository {

@@ -13,7 +13,6 @@ import android.os.Environment
 import android.util.TypedValue
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
-import androidx.annotation.Nullable
 import androidx.core.content.ContextCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -65,15 +64,21 @@ fun String.toDate(pattern: String = "yyyy-MM-dd HH:mm:ss.SSS"): Date {
     return format.parse(this) as Date
 }
 
-fun getStringDate(): String {
+fun getStringDate(dayDelta: Int = 0): String {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val current = LocalDateTime.now()
+        var current = LocalDateTime.now()
+        if (dayDelta != 0) {
+            current = current.plusDays(dayDelta.toLong())
+        }
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS", Locale.US)
         current.format(formatter)
     } else {
-        val current = Calendar.getInstance().time
+        val current = Calendar.getInstance()
+        if (dayDelta != 0) {
+            current.add(Calendar.DAY_OF_YEAR, dayDelta)
+        }
         val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US)
-        formatter.format(current)
+        formatter.format(current.time)
     }
 }
 

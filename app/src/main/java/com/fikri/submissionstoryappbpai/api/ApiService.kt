@@ -27,13 +27,6 @@ interface ApiService {
     ): Call<LoginResponseModel>
 
     @GET("stories")
-    fun getAllStories(
-        @Header("Authorization") authorization: String,
-        @Query("size") size: Int,
-        @Query("location") locationEnable: Int
-    ): Call<AllStoryResponseModel>
-
-    @GET("stories")
     suspend fun getAllBasicStories(
         @Header("Authorization") authorization: String,
         @Query("page") page: Int,
@@ -48,6 +41,13 @@ interface ApiService {
         @Part file: MultipartBody.Part,
         @Part("description") description: RequestBody
     ): Call<AddStoryResponseModel>
+
+    @GET("stories")
+    fun getAllMapStories(
+        @Header("Authorization") authorization: String,
+        @Query("size") size: Int,
+        @Query("location") locationEnable: Int
+    ): Call<AllStoryResponseModel>
 
     @Multipart
     @POST("stories")

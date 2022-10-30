@@ -3,12 +3,13 @@ package com.fikri.submissionstoryappbpai.view_model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.fikri.submissionstoryappbpai.data_model.ResultWrapper
 import com.fikri.submissionstoryappbpai.other_class.ResponseModal
 import com.fikri.submissionstoryappbpai.repository.RegisterRepository
+import kotlinx.coroutines.launch
 
-class RegisterViewModel(private val registerRepository: RegisterRepository) :
-    ViewModel() {
-
+class RegisterViewModel(private val registerRepository: RegisterRepository) : ViewModel() {
     private val _isShowLoading = MutableLiveData<Boolean>()
     val isShowLoading: LiveData<Boolean> = _isShowLoading
     private val _isShowResponseModal = MutableLiveData<Boolean>()
@@ -19,11 +20,24 @@ class RegisterViewModel(private val registerRepository: RegisterRepository) :
     var responseMessage: String? = null
 
     fun register(name: String, email: String, password: String) {
-        _isShowLoading.value = true
-        registerRepository.register(name, email, password) { responseType, responseMessage ->
+        viewModelScope.launch {
+            _isShowLoading.value = true
+            val result = registerRepository.register(name, email, password)
             _isShowLoading.value = false
-            this.responseType = responseType
-            this.responseMessage = responseMessage
+            when (result) {
+                is ResultWrapper.Success -> {
+                    responseType = ResponseModal.TYPE_SUCCESS
+                    responseMessage = result.message
+                }
+                is ResultWrapper.Error -> {
+                    responseType = result.failedType.toString()
+                    responseMessage = result.message
+                }
+                is ResultWrapper.NetworkError -> {
+                    responseType = result.failedType.toString()
+                    responseMessage = result.message
+                }
+            }
             _isShowResponseModal.value = true
         }
     }

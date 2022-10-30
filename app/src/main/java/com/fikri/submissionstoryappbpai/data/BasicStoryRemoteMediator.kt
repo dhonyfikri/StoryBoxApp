@@ -10,14 +10,13 @@ import com.fikri.submissionstoryappbpai.data_model.Story
 import com.fikri.submissionstoryappbpai.database.AppDatabase
 import com.fikri.submissionstoryappbpai.database.BasicStory
 import com.fikri.submissionstoryappbpai.database.RemoteKeys
-import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
 
 @OptIn(ExperimentalPagingApi::class)
 class BasicStoryRemoteMediator(
     private val database: AppDatabase,
     private val apiService: ApiService,
     private val token: String,
-    private val pref: DataStorePreferences
+    private val pref: DataStorePreferencesInterface
 ) : RemoteMediator<Int, Story>() {
 
     private companion object {

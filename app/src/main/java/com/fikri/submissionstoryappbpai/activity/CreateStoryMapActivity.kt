@@ -23,11 +23,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.fikri.submissionstoryappbpai.R
 import com.fikri.submissionstoryappbpai.custom_component.WorkaroundMapFragment
+import com.fikri.submissionstoryappbpai.data.DataStorePreferences
 import com.fikri.submissionstoryappbpai.data_model.CameraMapPosition
 import com.fikri.submissionstoryappbpai.databinding.ActivityCreateStoryMapBinding
 import com.fikri.submissionstoryappbpai.other_class.*
 import com.fikri.submissionstoryappbpai.view_model.CreateStoryMapViewModel
-import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelWithInjectionFactory
+import com.fikri.submissionstoryappbpai.view_model_factory.ViewModelFactory
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -87,7 +88,7 @@ class CreateStoryMapActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun setupData() {
         viewModel = ViewModelProvider(
             this,
-            ViewModelWithInjectionFactory(this)
+            ViewModelFactory(this)
         )[CreateStoryMapViewModel::class.java]
 
         mMap.setPadding(
@@ -174,7 +175,7 @@ class CreateStoryMapActivity : AppCompatActivity(), OnMapReadyCallback {
                     viewModel.uploadStory(edAddDescription.text.toString())
                 }
 
-                mapModeInSetting.observe(this@CreateStoryMapActivity) { mapMode ->
+                getMapModeInSetting().observe(this@CreateStoryMapActivity) { mapMode ->
                     if (currentMapMode == null) {
                         choiceMapMode(mapMode)
                     } else {

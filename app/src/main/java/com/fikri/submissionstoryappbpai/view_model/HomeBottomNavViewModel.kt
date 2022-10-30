@@ -3,12 +3,14 @@ package com.fikri.submissionstoryappbpai.view_model
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.fikri.submissionstoryappbpai.R
-import com.fikri.submissionstoryappbpai.other_class.DataStorePreferences
 import com.fikri.submissionstoryappbpai.repository.HomeBottomNavRepository
+import kotlinx.coroutines.launch
 
-class HomeBottomNavViewModel(private val homeBottomNavRepository: HomeBottomNavRepository) : ViewModel() {
+class HomeBottomNavViewModel(private val homeBottomNavRepository: HomeBottomNavRepository) :
+    ViewModel() {
 
     val storyListIcon = R.drawable.ic_list
     val storyMapsIcon = R.drawable.ic_map
@@ -29,5 +31,9 @@ class HomeBottomNavViewModel(private val homeBottomNavRepository: HomeBottomNavR
         _headerIcon.value = icon
     }
 
-    fun clearDataStore() = homeBottomNavRepository.clearDataStore()
+    fun clearDataStore() {
+        viewModelScope.launch {
+            homeBottomNavRepository.clearDataBeforeLogout()
+        }
+    }
 }
