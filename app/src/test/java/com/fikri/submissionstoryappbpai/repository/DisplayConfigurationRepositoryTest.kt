@@ -38,7 +38,7 @@ class DisplayConfigurationRepositoryTest {
     val mainDispatcherRule = MainDispatcherRule()
 
     @Test
-    fun `When Fetching Theme Setting, Data Is Not Null`() = runTest {
+    fun `When Fetching Theme Settings, The Return Data Will Match the Datastore`() = runTest {
         val expectedThemeSetting = flowOf(true)
 
         `when`(pref.getDataStoreBooleanValue(DataStorePreferences.DARK_MODE_KEY))
@@ -48,7 +48,6 @@ class DisplayConfigurationRepositoryTest {
             displayConfigurationRepository.getThemeSettings().getOrAwaitValue()
 
         Mockito.verify(pref).getDataStoreBooleanValue(DataStorePreferences.DARK_MODE_KEY)
-        Assert.assertNotNull(actualThemeSetting)
         Assert.assertEquals(expectedThemeSetting.first(), actualThemeSetting)
     }
 
@@ -63,7 +62,7 @@ class DisplayConfigurationRepositoryTest {
     }
 
     @Test
-    fun `When Fetching Map Settings, Data Is Not Null`() = runTest {
+    fun `When Fetching Map Settings, Data Is Not Null and The Return Data Will Match the Datastore`() = runTest {
         val expectedMapSetting = flowOf(DataStorePreferences.MODE_HYBRID)
 
         `when`(pref.getDataStoreStringValue(DataStorePreferences.MAP_MODE_KEY))

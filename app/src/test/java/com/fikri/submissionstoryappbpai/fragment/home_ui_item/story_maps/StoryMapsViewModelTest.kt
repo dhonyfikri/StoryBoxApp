@@ -73,17 +73,19 @@ class StoryMapsViewModelTest {
 
         val actualAddress = storyMapsViewModel.getAddressName(latLng)
 
+        Mockito.verify(mapsStoryRepository).getAddressName(latLng)
         Assert.assertNotNull(actualAddress)
         Assert.assertEquals(expectedAddress, actualAddress)
     }
 
     @Test
     fun `When Calling dismissRefreshModal Then isShowRefreshModal Becomes False`() = runTest {
+        val expectedIsShowRefreshModal = false
         storyMapsViewModel.dismissRefreshModal()
 
         val actualIsShowRefreshModal = storyMapsViewModel.isShowRefreshModal.getOrAwaitValue()
 
-        Assert.assertNotNull(actualIsShowRefreshModal)
+        Assert.assertEquals(expectedIsShowRefreshModal, actualIsShowRefreshModal)
         Assert.assertFalse(actualIsShowRefreshModal)
     }
 }

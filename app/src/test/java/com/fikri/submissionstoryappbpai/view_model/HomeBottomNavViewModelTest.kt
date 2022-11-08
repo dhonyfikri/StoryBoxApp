@@ -42,7 +42,6 @@ class HomeBottomNavViewModelTest {
 
         val actualIcon = homeBottomNavViewModel.headerIcon.getOrAwaitValue()
 
-        Assert.assertNotNull(actualIcon)
         Assert.assertEquals(expectedIcon, actualIcon)
     }
 

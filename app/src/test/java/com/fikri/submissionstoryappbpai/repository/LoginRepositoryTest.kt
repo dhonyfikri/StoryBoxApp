@@ -64,7 +64,7 @@ class LoginRepositoryTest {
     }
 
     @Test
-    fun `The Save Session Function Will Aave Token, Session and Other Data`() = runTest {
+    fun `The Save Session Function Will Save Token, Session and Other Data`() = runTest {
         val expectedLoginResult = generateLoginResponse().loginResult
 
         loginRepository.saveLoginData(expectedLoginResult)

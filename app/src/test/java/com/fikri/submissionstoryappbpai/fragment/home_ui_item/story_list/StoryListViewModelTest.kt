@@ -93,20 +93,22 @@ class StoryListViewModelTest {
         }
 
     @Test
-    fun `When Calling syncStoryListEmptyState Then showEmptyStoryMessage Will be True`() =
+    fun `When Calling syncStoryListEmptyState Then showEmptyStoryMessage Will Suit the Situation`() =
         runTest {
-            val expectedEmptyStory = true
-
             storyListViewModel.storyAdapterIsEmpty = true
             storyListViewModel.storyCountInDatabase = 0
-            storyListViewModel.adapterInitialLoading = false
+            storyListViewModel.adapterInitialLoading = true
+
+            val expectedEmptyStory =
+                (storyListViewModel.storyAdapterIsEmpty &&
+                        storyListViewModel.storyCountInDatabase == 0 &&
+                        !storyListViewModel.adapterInitialLoading)
 
             storyListViewModel.syncStoryListEmptyState()
 
             val actualEmptyStory = storyListViewModel.showEmptyStoryMessage.getOrAwaitValue()
 
             Assert.assertNotNull(actualEmptyStory)
-            Assert.assertTrue(actualEmptyStory)
             Assert.assertEquals(expectedEmptyStory, actualEmptyStory)
         }
 
@@ -119,7 +121,6 @@ class StoryListViewModelTest {
 
             val actualIsLoading = storyListViewModel.adapterStillLoading.getOrAwaitValue()
 
-            Assert.assertNotNull(actualIsLoading)
             Assert.assertTrue(actualIsLoading)
             Assert.assertEquals(expectedIsLoading, actualIsLoading)
         }

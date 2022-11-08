@@ -86,7 +86,7 @@ class MapsStoryRepositoryTest {
         }
 
     @Test
-    fun `When Fetching Data Map Setting Is Not Null`() = runTest {
+    fun `When Fetching Map Settings, Data Is Not Null and The Return Data Will Match the Datastore`() = runTest {
         val expectedMapSetting = flowOf(DataStorePreferences.MODE_HYBRID)
 
         `when`(pref.getDataStoreStringValue(DataStorePreferences.MAP_MODE_KEY))
@@ -100,7 +100,7 @@ class MapsStoryRepositoryTest {
     }
 
     @Test
-    fun `When Calling getAddressName It Will do Reverse Geocoding nd Not Null`() =
+    fun `When Calling getAddressName It Will do Reverse Geocoding and Not Null`() =
         runTest {
             val expectedAddress = "anything_address"
 

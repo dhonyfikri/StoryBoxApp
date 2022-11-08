@@ -93,6 +93,7 @@ class MainActivityViewModelTest {
         val expectedNumberOfCall = 1
 
         mainActivityViewModel.saveCurrentSession()
+
         Mockito.verify(mainActivityRepository, times(expectedNumberOfCall)).saveCurrentSession()
     }
 }

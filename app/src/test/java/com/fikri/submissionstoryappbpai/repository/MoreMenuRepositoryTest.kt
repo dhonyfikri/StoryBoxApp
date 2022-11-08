@@ -17,6 +17,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.`when`
 import org.mockito.junit.MockitoJUnitRunner
 
 @ExperimentalCoroutinesApi
@@ -42,7 +43,7 @@ class MoreMenuRepositoryTest {
         runTest {
             val expectedUsername = flowOf("Indry Puji Lestari")
 
-            Mockito.`when`(pref.getDataStoreStringValue(DataStorePreferences.NAME_KEY))
+            `when`(pref.getDataStoreStringValue(DataStorePreferences.NAME_KEY))
                 .thenReturn(expectedUsername)
 
             val actualUserName = moreMenuRepository.getUserName().getOrAwaitValue()
@@ -57,7 +58,7 @@ class MoreMenuRepositoryTest {
         runTest {
             val expectedLastLoginDate = flowOf(getStringDate())
 
-            Mockito.`when`(pref.getDataStoreStringValue(DataStorePreferences.LAST_LOGIN_KEY))
+            `when`(pref.getDataStoreStringValue(DataStorePreferences.LAST_LOGIN_KEY))
                 .thenReturn(expectedLastLoginDate)
 
             val actualLastLoginDate = moreMenuRepository.getActualLastLogin().getOrAwaitValue()

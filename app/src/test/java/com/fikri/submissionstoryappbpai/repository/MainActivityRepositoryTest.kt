@@ -42,38 +42,41 @@ class MainActivityRepositoryTest {
 
     @Test
     fun `Validation Will Succeed When There Is Session and Token`() = runTest {
+        val expectedResult = true
         pref.saveDataStoreValue(DataStorePreferences.SESSION_KEY, currentDate)
         pref.saveDataStoreValue(DataStorePreferences.TOKEN_KEY, token)
 
         val actualResult = mainActivityRepository.validatingLoginSession(currentDate.toDate())
 
-        Assert.assertNotNull(actualResult)
+        Assert.assertEquals(expectedResult, actualResult)
         Assert.assertTrue(actualResult)
     }
 
     @Test
     fun `Validation Will Fail When Last Login Is More Than 3 Days`() = runTest {
+        val expectedResult = false
         pref.saveDataStoreValue(DataStorePreferences.SESSION_KEY, getStringDate(-4))
         pref.saveDataStoreValue(DataStorePreferences.TOKEN_KEY, token)
 
         val actualResult = mainActivityRepository.validatingLoginSession(currentDate.toDate())
 
-        Assert.assertNotNull(actualResult)
+        Assert.assertEquals(expectedResult, actualResult)
         Assert.assertFalse(actualResult)
     }
 
     @Test
     fun `Validation Will Fail When There Is No Session or Token`() = runTest {
+        val expectedResult = false
         pref.clearDataStore()
 
         val actualResult = mainActivityRepository.validatingLoginSession(currentDate.toDate())
 
-        Assert.assertNotNull(actualResult)
+        Assert.assertEquals(expectedResult, actualResult)
         Assert.assertFalse(actualResult)
     }
 
     @Test
-    fun `When There Is a New Session Will Change The Session Date Value to Today`() = runTest {
+    fun `When There Is a New Session Will Change the Difference Between the Last Login Day and Today to 0`() = runTest {
         val expectedNumberOfDaysDifference = 0
         mainActivityRepository.saveCurrentSession()
 
@@ -88,11 +91,11 @@ class MainActivityRepositoryTest {
 
     @Test
     fun `The Theme Mode Will Match The Themes Stored in The Datastore`() = runTest {
-        pref.saveDataStoreValue(DataStorePreferences.DARK_MODE_KEY, true)
+        val expectedDarkMode = true
+        pref.saveDataStoreValue(DataStorePreferences.DARK_MODE_KEY, expectedDarkMode)
 
         val actualDarkMode = mainActivityRepository.getThemeSettings().getOrAwaitValue()
 
-        Assert.assertNotNull(actualDarkMode)
-        Assert.assertTrue(actualDarkMode)
+        Assert.assertEquals(expectedDarkMode, actualDarkMode)
     }
 }

@@ -63,11 +63,12 @@ class LoginViewModelTest {
     @Test
     fun `When Executing the dismissResponseModal Method, isShowingResponseModal Becomes False`() =
         runTest {
+            val expectedIsShowingResponseModal = false
             loginViewModel.dismissResponseModal()
 
             val actualIsShowingResponseModal = loginViewModel.isShowResponseModal.getOrAwaitValue()
 
-            Assert.assertNotNull(actualIsShowingResponseModal)
+            Assert.assertEquals(expectedIsShowingResponseModal, actualIsShowingResponseModal)
             Assert.assertFalse(actualIsShowingResponseModal)
         }
 }

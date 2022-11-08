@@ -72,19 +72,19 @@ class RegisterViewModelTest {
             )
             Assert.assertEquals(expectedRegisterResponse.message, currentResponseMessage)
             Assert.assertEquals(ResponseModal.TYPE_SUCCESS, currentResponseType)
-            Assert.assertNotNull(currentIsShowResponseModal)
             Assert.assertEquals(expectedIsShowResponseModal.value, currentIsShowResponseModal)
         }
 
     @Test
     fun `When Executing the dismissResponseModal Method, isShowingResponseModal Becomes False`() =
         runTest {
+            val expectedIsShowingResponseModal = false
             registerViewModel.dismissResponseModal()
 
             val actualIsShowingResponseModal =
                 registerViewModel.isShowResponseModal.getOrAwaitValue()
 
-            Assert.assertNotNull(actualIsShowingResponseModal)
+            Assert.assertEquals(expectedIsShowingResponseModal, actualIsShowingResponseModal)
             Assert.assertFalse(actualIsShowingResponseModal)
         }
 }

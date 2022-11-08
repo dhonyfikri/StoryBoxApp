@@ -79,7 +79,6 @@ class CreateStoryMapViewModelTest {
 
             Assert.assertNotNull(actualResponseType)
             Assert.assertNotNull(actualResponseMessage)
-            Assert.assertNotNull(actualIsShowResponseModal)
             Assert.assertEquals(expectedResponseType, actualResponseType)
             Assert.assertEquals(expectedUploadStoryResponse.message, actualResponseMessage)
             Assert.assertTrue(actualIsShowResponseModal)
@@ -129,29 +128,30 @@ class CreateStoryMapViewModelTest {
 
         val actualIsEnabled = createStoryMapViewModel.isAddButtonEnabled.getOrAwaitValue()
 
-        Assert.assertNotNull(actualIsEnabled)
         Assert.assertTrue(actualIsEnabled)
         Assert.assertEquals(expectedIsEnabled, actualIsEnabled)
     }
 
     @Test
     fun `When Calling dismissRefreshModal Then isShowRefreshModal Becomes False`() = runTest {
+        val expectedIsShowRefreshModal = false
         createStoryMapViewModel.dismissRefreshModal()
 
         val actualIsShowRefreshModal = createStoryMapViewModel.isShowRefreshModal.getOrAwaitValue()
 
-        Assert.assertNotNull(actualIsShowRefreshModal)
+        Assert.assertEquals(expectedIsShowRefreshModal, actualIsShowRefreshModal)
         Assert.assertFalse(actualIsShowRefreshModal)
     }
 
     @Test
     fun `When Calling dismissResponseModal Then isShowResponseModal Becomes False`() = runTest {
+        val expectedIsShowResponseModal = false
         createStoryMapViewModel.dismissResponseModal()
 
         val actualIsShowResponseModal =
             createStoryMapViewModel.isShowResponseModal.getOrAwaitValue()
 
-        Assert.assertNotNull(actualIsShowResponseModal)
+        Assert.assertEquals(expectedIsShowResponseModal, actualIsShowResponseModal)
         Assert.assertFalse(actualIsShowResponseModal)
     }
 }
